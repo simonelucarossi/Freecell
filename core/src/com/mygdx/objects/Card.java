@@ -8,8 +8,8 @@ public class Card {
 	private String suit;
 	
 	public Card() {
-		width = 50;
-		height = 100;
+		width = 70;
+		height = 120;
 		number = 1;
 		color = "Red";
 		suit = "Flowers";
