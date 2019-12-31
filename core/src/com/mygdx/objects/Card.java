@@ -15,9 +15,9 @@ public class Card {
 		suit = "Flowers";
 	}
 	
-	public Card(float width_, float height_, float number_, String color_, String suit_) {
-		this.width = width_;
-		this.height = height_;
+	public Card(float number_, String color_, String suit_) {
+		this.width = 35;
+		this.height = 65;
 		this.number = number_;
 		this.color = color_;
 		this.suit = suit_;

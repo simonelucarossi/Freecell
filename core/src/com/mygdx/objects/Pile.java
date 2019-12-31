@@ -22,4 +22,9 @@ public class Pile {
 	public Deque<Card> getCards() {
 		return this.stackOfCards;
 	}
+	
+	public int getSize() {
+		return this.stackOfCards.size();
+	}
+	
 }
