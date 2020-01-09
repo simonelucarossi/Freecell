@@ -34,59 +34,35 @@ public class Level {
 	// GENERATE CARDS TO INSERT IN THE 8 PILES
 	
 	public void generateCards() {
-		int numberPile, generatedNumber;
+		int numberPile, generatedNumber = 0;
 		Card generatedCard;
 
 
 		for(int i = 1; i < 14; i++) {
 			numberPile = 9;
 			generatedCard = new Card(i, "Black", "Flowers");
-			while(numberPile == 9) {
-				generatedNumber = (int) ((Math.random()*((7-0)+1))+0);
-				if(checkPileIsNotCompleted(generatedNumber)) {
-					numberPile = generatedNumber;
-				}
-			}
-			this.pilesOfCards.get(numberPile).insertCard(generatedCard);
+			this.pilesOfCards.get(generateColumnWhereInsertCard(numberPile, generatedNumber)).insertCard(generatedCard);
 		}
 
 		
 		for(int i = 1; i < 14; i++) {
 			numberPile = 9;
 			generatedCard = new Card(i, "Red", "Hearts");
-			while(numberPile == 9) {
-				generatedNumber = (int) ((Math.random()*((7-0)+1))+0);
-				if(checkPileIsNotCompleted(generatedNumber)) {
-					numberPile = generatedNumber;
-				}
-			}
-			this.pilesOfCards.get(numberPile).insertCard(generatedCard);
+			this.pilesOfCards.get(generateColumnWhereInsertCard(numberPile, generatedNumber)).insertCard(generatedCard);
 		}
 
 		
 		for(int i = 1; i < 14; i++) {
 			numberPile = 9;
 			generatedCard = new Card(i, "Black", "Spades");
-			while(numberPile == 9) {
-				generatedNumber = (int) ((Math.random()*((7-0)+1))+0);
-				if(checkPileIsNotCompleted(generatedNumber)) {
-					numberPile = generatedNumber;
-				}
-			}
-			this.pilesOfCards.get(numberPile).insertCard(generatedCard);
+			this.pilesOfCards.get(generateColumnWhereInsertCard(numberPile, generatedNumber)).insertCard(generatedCard);
 		}
 
 		
 		for(int i = 1; i < 14; i++) {
 			numberPile = 9;
 			generatedCard = new Card(i, "Red", "Squares");
-			while(numberPile == 9) {
-				generatedNumber = (int) ((Math.random()*((7-0)+1))+0);
-				if(checkPileIsNotCompleted(generatedNumber)) {
-					numberPile = generatedNumber;
-				}
-			}
-			this.pilesOfCards.get(numberPile).insertCard(generatedCard);
+			this.pilesOfCards.get(generateColumnWhereInsertCard(numberPile, generatedNumber)).insertCard(generatedCard);
 		}
 
 	}
@@ -106,6 +82,24 @@ public class Level {
 		return true;
 	}
 
+	
+	
+	//////
+	// SELECT THE WRIGHT COLUMN WHERE ADD CARDS
+	
+	public int generateColumnWhereInsertCard(int numberPile, int generatedNumber) {
+		while(numberPile == 9) {
+			generatedNumber = (int) ((Math.random()*((7-0)+1))+0);
+			if(checkPileIsNotCompleted(generatedNumber)) {
+				numberPile = generatedNumber;
+			}
+		}
+		
+		return numberPile;
+	}
+	
+	
+	
 	/**
 	 * @return the pilesOfCards
 	 */
