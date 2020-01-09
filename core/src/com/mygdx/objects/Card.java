@@ -6,13 +6,16 @@ public class Card {
 	private float number;
 	private String color;
 	private String suit;
+	private boolean moving, selected;
 	
 	public Card() {
-		width = 70;
-		height = 120;
+		width = 35;
+		height = 65;
 		number = 1;
 		color = "Red";
 		suit = "Flowers";
+		this.moving = false;
+		this.selected = false;
 	}
 	
 	public Card(float number_, String color_, String suit_) {
@@ -21,6 +24,8 @@ public class Card {
 		this.number = number_;
 		this.color = color_;
 		this.suit = suit_;
+		this.moving = false;
+		this.selected = false;
 	}
 
 	/**
@@ -92,6 +97,35 @@ public class Card {
 	public void setSuit(String suit) {
 		this.suit = suit;
 	}
+
+	/**
+	 * @return the moving
+	 */
+	public boolean isMoving() {
+		return moving;
+	}
+
+	/**
+	 * @param moving the moving to set
+	 */
+	public void setMoving(boolean moving) {
+		this.moving = moving;
+	}
+
+	/**
+	 * @return the selected
+	 */
+	public boolean isSelected() {
+		return selected;
+	}
+
+	/**
+	 * @param selected the selected to set
+	 */
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+	
 	
 	
 }
