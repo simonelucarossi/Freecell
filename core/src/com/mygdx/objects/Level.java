@@ -1,12 +1,24 @@
 package com.mygdx.objects;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 public class Level {
 	private ArrayList<Pile> pilesOfCards;
+	private ArrayList<FreeCell> freeCells;
+	private ArrayList<Card> scales;
+	Dimension dimensions;
+	private int w,h;
 	
 	
 	public Level() {
+		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		
+		
+		
+		
+		w = dimensions.width;
+		h = dimensions.height;
 		create();
 	}
 	
@@ -14,8 +26,23 @@ public class Level {
 	// CREATE THE LEVEL
 	
 	public void create() {
+
+		freeCells = new ArrayList<FreeCell>();
+
+		freeCells.add(new FreeCell(264 + (0 * w/11 - 2), (h - 220), w/16, h/7, 8));
+		freeCells.add(new FreeCell(264 + (1 * w/11 - 2), (h - 220), w/16, h/7, 9));
+		freeCells.add(new FreeCell(264 + (2 * w/11 - 2), (h - 220), w/16, h/7, 10));
+		freeCells.add(new FreeCell(264 + (3 * w/11 - 2), (h - 220), w/16, h/7, 11));
 		
 		pilesOfCards = new ArrayList<Pile>();
+		
+		scales = new ArrayList<Card>();
+
+		/*scales.add(new ArrayList<Card>());
+		scales.add(new ArrayList<Card>());
+		scales.add(new ArrayList<Card>());
+		scales.add(new ArrayList<Card>());
+*/
 		
 		generatePilesOfCards();
 		generateCards();
@@ -26,7 +53,7 @@ public class Level {
 	// GENERATE 8 EMPTY PILES OF CARDS
 	public void generatePilesOfCards() {
 		for(int i = 0; i < 8; i++) {
-			this.pilesOfCards.add(new Pile());
+			this.pilesOfCards.add(new Pile(270 + (i * w/11), 700));
 		}
 	}
 	
@@ -34,35 +61,56 @@ public class Level {
 	// GENERATE CARDS TO INSERT IN THE 8 PILES
 	
 	public void generateCards() {
-		int numberPile, generatedNumber = 0;
+		int numberPile, generatedNumber = 0, columnWhereInsert = 0;
+		float positionXWhereInsert, positionYWhereInsert;
 		Card generatedCard;
 
 
 		for(int i = 1; i < 14; i++) {
 			numberPile = 9;
-			generatedCard = new Card(i, "Black", "Flowers");
-			this.pilesOfCards.get(generateColumnWhereInsertCard(numberPile, generatedNumber)).insertCard(generatedCard);
+			
+			columnWhereInsert = generateColumnWhereInsertCard(numberPile, generatedNumber);
+			positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
+			positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
+			
+			generatedCard = new Card(i, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+			this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
 		}
 
 		
 		for(int i = 1; i < 14; i++) {
 			numberPile = 9;
-			generatedCard = new Card(i, "Red", "Hearts");
-			this.pilesOfCards.get(generateColumnWhereInsertCard(numberPile, generatedNumber)).insertCard(generatedCard);
+			
+			columnWhereInsert = generateColumnWhereInsertCard(numberPile, generatedNumber);
+			positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
+			positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
+			
+			generatedCard = new Card(i, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+			this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
 		}
 
 		
 		for(int i = 1; i < 14; i++) {
 			numberPile = 9;
-			generatedCard = new Card(i, "Black", "Spades");
-			this.pilesOfCards.get(generateColumnWhereInsertCard(numberPile, generatedNumber)).insertCard(generatedCard);
+			
+			columnWhereInsert = generateColumnWhereInsertCard(numberPile, generatedNumber);
+			positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
+			positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
+			
+			generatedCard = new Card(i, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+			this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
 		}
 
 		
 		for(int i = 1; i < 14; i++) {
 			numberPile = 9;
-			generatedCard = new Card(i, "Red", "Squares");
-			this.pilesOfCards.get(generateColumnWhereInsertCard(numberPile, generatedNumber)).insertCard(generatedCard);
+			
+			columnWhereInsert = generateColumnWhereInsertCard(numberPile, generatedNumber);
+			positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
+			positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
+			
+			generatedCard = new Card(i, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+			this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
 		}
 
 	}
@@ -113,6 +161,59 @@ public class Level {
 	public void setPilesOfCards(ArrayList<Pile> pilesOfCards) {
 		this.pilesOfCards = pilesOfCards;
 	}
+
+	/**
+	 * @return the scales
+	 */
+	public ArrayList<Card> getScales() {
+		return scales;
+	}
+
+	/**
+	 * @param scales the scales to set
+	 */
+	public void setScales(ArrayList<Card> scales) {
+		this.scales = scales;
+	}
+
+	/**
+	 * @return the w
+	 */
+	public int getW() {
+		return w;
+	}
+
+	/**
+	 * @param w the w to set
+	 */
+	public void setW(int w) {
+		this.w = w;
+	}
+
+	/**
+	 * @return the h
+	 */
+	public int getH() {
+		return h;
+	}
+
+	/**
+	 * @param h the h to set
+	 */
+	public void setH(int h) {
+		this.h = h;
+	}
+
+	public ArrayList<FreeCell> getFreeCells() {
+		return freeCells;
+	}
+
+	public void setFreeCells(ArrayList<FreeCell> freeCells) {
+		this.freeCells = freeCells;
+	}
+
 	
+	
+
 	
 }

@@ -1,58 +1,82 @@
 package com.mygdx.objects;
 
+import java.awt.Dimension;
+
+import com.badlogic.gdx.Gdx;
+
 public class Card {
-	private float width;
-	private float height;
-	private float number;
+	private int width;
+	private int height;
+	private int number;
+	private float positionX, positionY;
 	private String color;
 	private String suit;
 	private boolean moving, selected;
+	private int column;
+	private int screen_width, screen_height;
+	Dimension dimensions;
 	
 	public Card() {
-		width = 35;
-		height = 65;
+		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		this.screen_width = dimensions.width;
+		this.screen_height = dimensions.height;
+//		
+		System.out.println(this.screen_width);
+		width = 100;
+		height = 100;
 		number = 1;
 		color = "Red";
 		suit = "Flowers";
 		this.moving = false;
 		this.selected = false;
+		this.column = 0;
+		this.positionX = 0;
+		this.positionY = 0; 
 	}
 	
-	public Card(float number_, String color_, String suit_) {
-		this.width = 35;
-		this.height = 65;
+	public Card(int number_, String color_, String suit_, int column_, float positionX_, float positionY_) {
+		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		this.screen_width = dimensions.width;
+		this.screen_height = dimensions.height;
+		
+		
+		width = screen_width/18;
+		height = screen_height/9;
 		this.number = number_;
 		this.color = color_;
 		this.suit = suit_;
 		this.moving = false;
 		this.selected = false;
+		this.column = column_;
+		this.positionX = positionX_;
+		this.positionY = positionY_;
 	}
 
 	/**
 	 * @return the width
 	 */
-	public float getWidth() {
+	public int getWidth() {
 		return width;
 	}
 
 	/**
 	 * @param width the width to set
 	 */
-	public void setWidth(float width) {
+	public void setWidth(int width) {
 		this.width = width;
 	}
 
 	/**
 	 * @return the height
 	 */
-	public float getHeight() {
+	public int getHeight() {
 		return height;
 	}
 
 	/**
 	 * @param height the height to set
 	 */
-	public void setHeight(float height) {
+	public void setHeight(int height) {
 		this.height = height;
 	}
 
@@ -66,7 +90,7 @@ public class Card {
 	/**
 	 * @param number the number to set
 	 */
-	public void setNumber(float number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 
@@ -125,7 +149,46 @@ public class Card {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
-	
-	
-	
+
+	/**
+	 * @return the column
+	 */
+	public int getColumn() {
+		return column;
+	}
+
+	/**
+	 * @param column the column to set
+	 */
+	public void setColumn(int column) {
+		this.column = column;
+	}
+
+	/**
+	 * @return the positionX
+	 */
+	public float getPositionX() {
+		return positionX;
+	}
+
+	/**
+	 * @param positionX the positionX to set
+	 */
+	public void setPositionX(float positionX) {
+		this.positionX = positionX;
+	}
+
+	/**
+	 * @return the positionY
+	 */
+	public float getPositionY() {
+		return positionY;
+	}
+
+	/**
+	 * @param positionY the positionY to set
+	 */
+	public void setPositionY(float positionY) {
+		this.positionY = positionY;
+	}
 }

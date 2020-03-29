@@ -1,17 +1,28 @@
 package com.mygdx.game;
 
+import java.awt.Dimension;
+
+import com.badlogic.gdx.Gdx;
 import com.mygdx.objects.Level;
 
 public class GameOfCards {
 	private Level level;
 	private long score, time;
+	private Dimension dimension;
+	private int w,h;
+	Dimension dimensions;
 	
 	public GameOfCards() {
 		
-		this.level = new Level();
-		System.out.println("CAZZAROLA 1");
+		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		w = dimensions.width;
+		h = dimensions.height;
+		
+		System.out.println(w + " " + h);
+		
 		this.score = 0;
 		this.time = 0;
+		this.level = new Level();
 	}
 
 	/**
@@ -55,6 +66,6 @@ public class GameOfCards {
 	public void setTime(long time) {
 		this.time = time;
 	}
-	
+
 	
 }
