@@ -2,21 +2,21 @@ package com.mygdx.objects;
 
 import java.util.ArrayList;
 
-public class FreeCell {
+public class Scale {
 	int positionX, positionY;
 	int width, height, column;
-	private ArrayList<Card> freeCells;
-	
-	public FreeCell() {
-	
+	private ArrayList<Card> scale;
+
+	public Scale() {
+
 	}
-	
-	public FreeCell(int posX, int posY, int width, int height, int column) {
+
+	public Scale(int posX, int posY, int width, int height, int column) {
 		positionX = posX;
 		positionY = posY;
 		this.width = width;
 		this.height = height;
-		freeCells = new ArrayList<Card>();
+		scale = new ArrayList<Card>();
 		this.column = column;
 	}
 
@@ -46,20 +46,6 @@ public class FreeCell {
 	 */
 	public void setPositionY(int positionY) {
 		this.positionY = positionY;
-	}
-
-	/**
-	 * @return the freeCells
-	 */
-	public ArrayList<Card> getFreeCells() {
-		return freeCells;
-	}
-
-	/**
-	 * @param freeCells the freeCells to set
-	 */
-	public void setFreeCells(ArrayList<Card> freeCells) {
-		this.freeCells = freeCells;
 	}
 
 	/**
@@ -103,12 +89,26 @@ public class FreeCell {
 	public void setColumn(int column) {
 		this.column = column;
 	}
+
+	/**
+	 * @return the scale
+	 */
+	public ArrayList<Card> getScale() {
+		return scale;
+	}
+
+	/**
+	 * @param scale the scale to set
+	 */
+	public void setScale(ArrayList<Card> scale) {
+		this.scale = scale;
+	}
 	
 	public void insertCard(Card cardPassed) {
-		this.freeCells.add(cardPassed);
+		this.scale.add(cardPassed);
 	}
 	
 	public void removeCard(Card c) {
-		this.freeCells.remove(c);
+		this.scale.remove(c);
 	}
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Level {
 	private ArrayList<Pile> pilesOfCards;
 	private ArrayList<FreeCell> freeCells;
-	private ArrayList<Card> scales;
+	private ArrayList<Scale> scales;
 	Dimension dimensions;
 	private int w,h;
 	
@@ -28,21 +28,28 @@ public class Level {
 	public void create() {
 
 		freeCells = new ArrayList<FreeCell>();
-
+		scales = new ArrayList<Scale>();
+		pilesOfCards = new ArrayList<Pile>();
+		
+		/* 
 		freeCells.add(new FreeCell(264 + (0 * w/11 - 2), (h - 220), w/16, h/7, 8));
 		freeCells.add(new FreeCell(264 + (1 * w/11 - 2), (h - 220), w/16, h/7, 9));
 		freeCells.add(new FreeCell(264 + (2 * w/11 - 2), (h - 220), w/16, h/7, 10));
 		freeCells.add(new FreeCell(264 + (3 * w/11 - 2), (h - 220), w/16, h/7, 11));
+		*/
 		
-		pilesOfCards = new ArrayList<Pile>();
+		freeCells.add(new FreeCell(20, (h - 1 * 220), w/17, h/7, 8));
+		freeCells.add(new FreeCell(20, (h - 2 * 220), w/17, h/7, 9));
+		freeCells.add(new FreeCell(20, (h - 3 * 220), w/17, h/7, 10));
+		freeCells.add(new FreeCell(20, (h - 4 * 220), w/17, h/7, 11));
 		
-		scales = new ArrayList<Card>();
+		
+		
 
-		/*scales.add(new ArrayList<Card>());
-		scales.add(new ArrayList<Card>());
-		scales.add(new ArrayList<Card>());
-		scales.add(new ArrayList<Card>());
-*/
+		scales.add(new Scale((w - 150), (h - 1 * 220), w/17, h/7, 12));
+		scales.add(new Scale((w - 150), (h - 2 * 220), w/17, h/7, 13));
+		scales.add(new Scale((w - 150), (h - 3 * 220), w/17, h/7, 14));
+		scales.add(new Scale((w - 150), (h - 4 * 220), w/17, h/7, 15));
 		
 		generatePilesOfCards();
 		generateCards();
@@ -53,7 +60,7 @@ public class Level {
 	// GENERATE 8 EMPTY PILES OF CARDS
 	public void generatePilesOfCards() {
 		for(int i = 0; i < 8; i++) {
-			this.pilesOfCards.add(new Pile(270 + (i * w/11), 700));
+			this.pilesOfCards.add(new Pile(270 + (i * w/11), h - 220));
 		}
 	}
 	
@@ -165,14 +172,14 @@ public class Level {
 	/**
 	 * @return the scales
 	 */
-	public ArrayList<Card> getScales() {
+	public ArrayList<Scale> getScales() {
 		return scales;
 	}
 
 	/**
 	 * @param scales the scales to set
 	 */
-	public void setScales(ArrayList<Card> scales) {
+	public void setScales(ArrayList<Scale> scales) {
 		this.scales = scales;
 	}
 

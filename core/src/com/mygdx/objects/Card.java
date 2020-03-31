@@ -41,7 +41,7 @@ public class Card {
 		
 		
 		width = screen_width/18;
-		height = screen_height/9;
+		height = screen_height/7 - 6;
 		this.number = number_;
 		this.color = color_;
 		this.suit = suit_;

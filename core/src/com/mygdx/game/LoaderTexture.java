@@ -23,7 +23,8 @@ public class LoaderTexture {
 	public Texture textureKingFlowersSelected, textureKingSpadesSelected, textureKingHeartsSelected, textureKingSquaresSelected;
 	
 	
-	public Texture textureEmptyBoxe, textureScales, textureAces, textureMenuGameBackground, textureCardsGameMenu, texturePlayButton, texturePauseButton, textureUndoButton;
+	public Texture textureEmptyBoxe, textureScales, textureAces, textureMenuGameBackground, textureCardsGameMenu, texturePlayButton, texturePauseButton, textureUndoButton, textureScoreButton, textureTimeButton, textureMenuBackground;
+	public Texture textureBackGameButton, textureRandomGameButton, textureNumberedGameButton, textureBackgroundTransparent;
 	
 	public LoaderTexture() {
 		
@@ -164,7 +165,7 @@ public class LoaderTexture {
 		textureKingSquaresSelected = new Texture("KD_selected.png");
 		
 		/* LOADING SYSTEM TEXTURES  */
-		textureBackgroundTable = new Texture("green_background_table.jpg");
+		textureBackgroundTable = new Texture("background_1.jpg");
 		textureEmptyBoxe = new Texture("empty_box.png");
 		textureScales = new Texture("scales.png");
 		textureAces = new Texture("aces.png");
@@ -173,5 +174,13 @@ public class LoaderTexture {
 		texturePauseButton = new Texture("pause_button.png");
 		texturePlayButton = new Texture("play_button.png");
 		textureUndoButton = new Texture("undo_button.png");
+		textureScoreButton = new Texture("score.png");
+		textureTimeButton = new Texture("time.png");
+		textureMenuBackground = new Texture("game_box_prova.png");
+		
+		textureBackGameButton = new Texture("back_button.png");
+		textureRandomGameButton = new Texture("random_game_button.png");
+		textureNumberedGameButton = new Texture("numbered_game_button.png");
+		textureBackgroundTransparent = new Texture("background_transparent.png");
 	}
 }

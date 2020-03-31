@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
@@ -22,13 +23,13 @@ public class GameGui {
 	OrthographicCamera camera;
 	Dimension dimensions;
 
-	
-	
+
+
 	public GameGui(GameOfCards _game) {
 		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		screen_width = dimensions.width;
 		screen_height = dimensions.height;
-		
+
 		this.game = _game;
 		this.batch = new SpriteBatch();
 		this.loaderTexture = new LoaderTexture();
@@ -36,7 +37,7 @@ public class GameGui {
 
 		this.card_height = (int) this.game.getLevel().getPilesOfCards().get(0).getCards().getLast().getHeight();
 		this.card_width = (int) game.getLevel().getPilesOfCards().get(0).getCards().getLast().getWidth();
-		
+
 
 		fontSizeX = (float) 0.5;
 		fontSizeY = (float) 0.5;
@@ -46,7 +47,7 @@ public class GameGui {
 	}
 
 	public void drawLevel() {
-		
+
 
 
 		Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -56,23 +57,24 @@ public class GameGui {
 
 		batch.begin();
 
-		
+
 		this.pile_margin = screen_width/11;
 		this.card_padding = screen_height/10;
-		
-		
+
+
 
 		batch.draw(loaderTexture.textureBackgroundTable, 0, 0, screen_width, screen_height);
 
 		for(int q = 0; q < 4; q++) {
 			batch.draw(loaderTexture.textureEmptyBoxe, this.game.getLevel().getFreeCells().get(q).getPositionX(), this.game.getLevel().getFreeCells().get(q).getPositionY(), this.game.getLevel().getFreeCells().get(q).getWidth(), this.game.getLevel().getFreeCells().get(q).getHeight());
+			batch.draw(loaderTexture.textureScales, this.game.getLevel().getScales().get(q).getPositionX(), this.game.getLevel().getScales().get(q).getPositionY(), this.game.getLevel().getScales().get(q).getWidth(), this.game.getLevel().getScales().get(q).getHeight());
 		}
 
-		for (int q = 4; q < 8; q++) {
-			batch.draw(loaderTexture.textureScales, 264 + (q * this.pile_margin - 2), (screen_height - 220), screen_width/16, screen_height/7);
-		}
+		/*for (int q = 0; q < 4; q++) {
+			batch.draw(loaderTexture.textureScales, (screen_width - 150), (screen_height - (220 * q)), screen_width/17, screen_height/7);
+		}*/
 
-		
+
 
 		HashMap<String, Texture[]> textures = new HashMap<String, Texture[]>() {
 			{
@@ -102,7 +104,7 @@ public class GameGui {
 								loaderTexture.textureQueenSquares, loaderTexture.textureKingSquares });
 			}
 		};
-		
+
 		HashMap<String, Texture[]> selectedTextures = new HashMap<String, Texture[]>() {
 			{
 				put("Flowers",
@@ -132,6 +134,9 @@ public class GameGui {
 			}
 		};
 
+		////
+		// DRAW PILES OF CARDS
+
 		for (int j = 0; j < this.game.getLevel().getPilesOfCards().size(); j++) {
 			Pile pileInspected = this.game.getLevel().getPilesOfCards().get(j);
 			float card_positionX, card_positionY;
@@ -145,7 +150,7 @@ public class GameGui {
 				} else {
 					cardTexture = textures.get(card.getSuit())[(int) (card.getNumber() - 1)];
 				}
-				
+
 				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
 				font.getData().setScale(1.0f, 1.0f);
 				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
@@ -155,15 +160,73 @@ public class GameGui {
 			}
 		}
 
-		batch.draw(loaderTexture.textureMenuGameBackground, 470, -10, screen_width/2, screen_height/9);
-		batch.draw(loaderTexture.textureCardsGameMenu, 295, 23, 25, 30);
-		batch.draw(loaderTexture.texturePauseButton, 218, 25, 16, 22);
-		batch.draw(loaderTexture.textureUndoButton, 379, 27, 14, 18);
 
-		font.getData().setScale(fontSizeX, fontSizeY);
-		font.draw(batch, "Pause Game", 205, 19);
-		font.draw(batch, "Play", 303, 19);
-		font.draw(batch, "Undo", 379, 19);
+
+		////
+		// DRAW CARDS IN FREE CELLS
+		for (int j = 0; j < this.game.getLevel().getFreeCells().size(); j++) {
+			ArrayList<Card> arrayInspected = this.game.getLevel().getFreeCells().get(j).getFreeCells();
+			if(!arrayInspected.isEmpty()) {
+				float card_positionX, card_positionY;
+				Texture cardTexture;
+				Card card = arrayInspected.get(0); 
+				card_positionX = card.getPositionX();
+				card_positionY = card.getPositionY();
+				if(card.isSelected()) {
+					cardTexture = selectedTextures.get(card.getSuit())[(int) (card.getNumber() - 1)];
+				} else {
+					cardTexture = textures.get(card.getSuit())[(int) (card.getNumber() - 1)];
+				}
+
+				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
+				font.getData().setScale(1.0f, 1.0f);
+				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
+				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
+			}
+		}
+
+
+
+		////
+		// DRAW CARDS OF SCALES
+		for (int j = 0; j < this.game.getLevel().getScales().size(); j++) {
+			ArrayList<Card> arrayInspected = this.game.getLevel().getScales().get(j).getScale();
+			if(!arrayInspected.isEmpty()) {
+				float card_positionX, card_positionY;
+				Texture cardTexture;
+				Card card = arrayInspected.get(arrayInspected.size() - 1); 
+				card_positionX = card.getPositionX();
+				card_positionY = card.getPositionY();
+				cardTexture = textures.get(card.getSuit())[(int) (card.getNumber() - 1)];
+				
+				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
+				font.getData().setScale(1.0f, 1.0f);
+				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
+				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
+			}
+		}
+
+		//
+		batch.draw(loaderTexture.textureCardsGameMenu, screen_width/2 - 70, 45, screen_width/24, screen_height/16);
+		batch.draw(loaderTexture.texturePauseButton, screen_width/2 - 289, 45, screen_width/25, screen_height/16);
+		batch.draw(loaderTexture.textureUndoButton, screen_width/2 + 152, 45, screen_width/24, screen_height/16);
+		batch.draw(loaderTexture.textureScoreButton, screen_width/2 + 570, 45, screen_width/26, screen_height/17);
+		batch.draw(loaderTexture.textureTimeButton, screen_width/3 - 480, 45, screen_width/24, screen_height/15);
+
+		font.getData().setScale(fontSizeX * 3, fontSizeY * 3);
+		font.draw(batch, "Menu", screen_width/2 - 58, 33);
+		font.draw(batch, "Exit", screen_width/2 - 268, 33);
+		font.draw(batch, "Hint", screen_width/2 + 172, 33);
+		
+		font.getData().setScale(fontSizeX * 4, fontSizeY * 4);
+		font.draw(batch, "01:00", screen_width/3 - 380, 90);
+		font.draw(batch, "100", screen_width/2 + 670, 90);
+		
+		batch.draw(loaderTexture.textureBackgroundTransparent, 0, 0, screen_width, screen_height);
+		batch.draw(loaderTexture.textureMenuBackground, screen_width/3 + 100, screen_height/4, screen_width/4, screen_height/3 + 200);
+		batch.draw(loaderTexture.textureBackGameButton, screen_width/3 + 165, screen_height/4 + 80, 350, 110);
+		batch.draw(loaderTexture.textureNumberedGameButton, screen_width/3 + 165, screen_height/4 + 190, 350, 110);
+		batch.draw(loaderTexture.textureRandomGameButton, screen_width/3 + 165, screen_height/4 + 300, 350, 110);
 
 		batch.end();
 	}
@@ -177,232 +240,3 @@ public class GameGui {
 	}
 }
 
-				// if(card.getColor().equals("Black")) {
-				// if(card.getSuit().equals("Flowers")) {
-				// if(card.getNumber() == 1) {
-				// System.out.println("POSIZIONE: " + card.getPositionX() + " " +
-				// card.getPositionY());
-				// if(!card.isSelected()) {
-				// batch.draw(loaderTexture.textureAceFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// else {
-				// batch.draw(loaderTexture.textureFourFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// }
-				// if(card.getNumber() == 2) {
-				// batch.draw(loaderTexture.textureTwoFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 3) {
-				// batch.draw(loaderTexture.textureThreeFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 4) {
-				// batch.draw(loaderTexture.textureFourFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 5) {
-				// batch.draw(loaderTexture.textureFiveFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 6) {
-				// batch.draw(loaderTexture.textureSixFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 7) {
-				// batch.draw(loaderTexture.textureSevenFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 8) {
-				// batch.draw(loaderTexture.textureEightFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 9) {
-				// batch.draw(loaderTexture.textureNineFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 10) {
-				// batch.draw(loaderTexture.textureTenFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 11) {
-				// batch.draw(loaderTexture.textureKnightFlowers, card_positionX,
-				// card_positionY, card_width, card_height);
-				// }
-				// if(card.getNumber() == 12) {
-				// batch.draw(loaderTexture.textureQueenFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 13) {
-				// batch.draw(loaderTexture.textureKingFlowers, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// }
-				// else {
-				// if(card.getNumber() == 1) {
-				// batch.draw(loaderTexture.textureAceSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 2) {
-				// batch.draw(loaderTexture.textureTwoSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 3) {
-				// batch.draw(loaderTexture.textureThreeSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 4) {
-				// batch.draw(loaderTexture.textureFourSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 5) {
-				// batch.draw(loaderTexture.textureFiveSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 6) {
-				// batch.draw(loaderTexture.textureSixSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 7) {
-				// batch.draw(loaderTexture.textureSevenSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 8) {
-				// batch.draw(loaderTexture.textureEightSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 9) {
-				// batch.draw(loaderTexture.textureNineSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 10) {
-				// batch.draw(loaderTexture.textureTenSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 11) {
-				// batch.draw(loaderTexture.textureKnightSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 12) {
-				// batch.draw(loaderTexture.textureQueenSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 13) {
-				// batch.draw(loaderTexture.textureKingSpades, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// }
-				// }
-
-				// else {
-				// if(card.getSuit().equals("Hearts")) {
-				// if(card.getNumber() == 1) {
-				// batch.draw(loaderTexture.textureAceHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 2) {
-				// batch.draw(loaderTexture.textureTwoHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 3) {
-				// batch.draw(loaderTexture.textureThreeHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 4) {
-				// batch.draw(loaderTexture.textureFourHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 5) {
-				// batch.draw(loaderTexture.textureFiveHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 6) {
-				// batch.draw(loaderTexture.textureSixHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 7) {
-				// batch.draw(loaderTexture.textureSevenHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 8) {
-				// batch.draw(loaderTexture.textureEightHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 9) {
-				// batch.draw(loaderTexture.textureNineHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 10) {
-				// batch.draw(loaderTexture.textureTenHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 11) {
-				// batch.draw(loaderTexture.textureKnightHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 12) {
-				// batch.draw(loaderTexture.textureQueenHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 13) {
-				// batch.draw(loaderTexture.textureKingHearts, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// }
-				// else {
-				// if(card.getNumber() == 1) {
-				// batch.draw(loaderTexture.textureAceSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 2) {
-				// batch.draw(loaderTexture.textureTwoSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 3) {
-				// batch.draw(loaderTexture.textureThreeSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 4) {
-				// batch.draw(loaderTexture.textureFourSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 5) {
-				// batch.draw(loaderTexture.textureFiveSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 6) {
-				// batch.draw(loaderTexture.textureSixSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 7) {
-				// batch.draw(loaderTexture.textureSevenSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 8) {
-				// batch.draw(loaderTexture.textureEightSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 9) {
-				// batch.draw(loaderTexture.textureNineSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 10) {
-				// batch.draw(loaderTexture.textureTenSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 11) {
-				// batch.draw(loaderTexture.textureKnightSquares, card_positionX,
-				// card_positionY, card_width, card_height);
-				// }
-				// if(card.getNumber() == 12) {
-				// batch.draw(loaderTexture.textureQueenSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// if(card.getNumber() == 13) {
-				// batch.draw(loaderTexture.textureKingSquares, card_positionX, card_positionY,
-				// card_width, card_height);
-				// }
-				// }
-				// }				i++;
