@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.objects.Button;
 import com.mygdx.objects.Card;
 import com.mygdx.objects.Pile;
 
@@ -22,6 +23,7 @@ public class GameGui {
 	private GameOfCards game;
 	OrthographicCamera camera;
 	Dimension dimensions;
+	HashMap<String, Texture[]> texturesHashMap, selectedTexturesHashMap; 
 
 
 
@@ -44,6 +46,11 @@ public class GameGui {
 
 		camera = new OrthographicCamera(dimensions.width, dimensions.height);
 		camera.position.set((float)dimensions.getWidth()/2.0f,(float)dimensions.getHeight()/2.0f, 0.0f);
+		
+		this.pile_margin = screen_width/11;
+		this.card_padding = screen_height/10;
+		
+		initTexturesHashMaps();
 	}
 
 	public void drawLevel() {
@@ -58,11 +65,6 @@ public class GameGui {
 		batch.begin();
 
 
-		this.pile_margin = screen_width/11;
-		this.card_padding = screen_height/10;
-
-
-
 		batch.draw(loaderTexture.textureBackgroundTable, 0, 0, screen_width, screen_height);
 
 		for(int q = 0; q < 4; q++) {
@@ -70,13 +72,114 @@ public class GameGui {
 			batch.draw(loaderTexture.textureScales, this.game.getLevel().getScales().get(q).getPositionX(), this.game.getLevel().getScales().get(q).getPositionY(), this.game.getLevel().getScales().get(q).getWidth(), this.game.getLevel().getScales().get(q).getHeight());
 		}
 
-		/*for (int q = 0; q < 4; q++) {
-			batch.draw(loaderTexture.textureScales, (screen_width - 150), (screen_height - (220 * q)), screen_width/17, screen_height/7);
-		}*/
+		
+
+		////
+		// DRAW PILES OF CARDS
+
+		for (int j = 0; j < this.game.getLevel().getPilesOfCards().size(); j++) {
+			Pile pileInspected = this.game.getLevel().getPilesOfCards().get(j);
+			float card_positionX, card_positionY;
+			Texture cardTexture;
+			int i = 0;
+			
+			batch.draw(loaderTexture.textureEmptyBoxePiles, pileInspected.getPositionX() - 10, pileInspected.getPositionY() + card_height - 65, card_width + 20, card_height/2);
+			
+			for (Card card : pileInspected.getCards()) {
+				card_positionX = card.getPositionX();
+				card_positionY = card.getPositionY();
+				if(card.isSelected()) {
+					cardTexture = selectedTexturesHashMap.get(card.getSuit())[(int) (card.getNumber() - 1)];
+				} else {
+					cardTexture = texturesHashMap.get(card.getSuit())[(int) (card.getNumber() - 1)];
+				}
+
+				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
+				font.getData().setScale(1.0f, 1.0f);
+				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
+				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
+
+				i++;
+			}
+		}
 
 
 
-		HashMap<String, Texture[]> textures = new HashMap<String, Texture[]>() {
+		////
+		// DRAW CARDS IN FREE CELLS
+		for (int j = 0; j < this.game.getLevel().getFreeCells().size(); j++) {
+			ArrayList<Card> arrayInspected = this.game.getLevel().getFreeCells().get(j).getFreeCells();
+			if(!arrayInspected.isEmpty()) {
+				float card_positionX, card_positionY;
+				Texture cardTexture;
+				Card card = arrayInspected.get(0); 
+				card_positionX = card.getPositionX();
+				card_positionY = card.getPositionY();
+				if(card.isSelected()) {
+					cardTexture = selectedTexturesHashMap.get(card.getSuit())[(int) (card.getNumber() - 1)];
+				} else {
+					cardTexture = texturesHashMap.get(card.getSuit())[(int) (card.getNumber() - 1)];
+				}
+
+				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
+				font.getData().setScale(1.0f, 1.0f);
+				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
+				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
+			}
+		}
+
+
+
+		////
+		// DRAW CARDS OF SCALES
+		for (int j = 0; j < this.game.getLevel().getScales().size(); j++) {
+			ArrayList<Card> arrayInspected = this.game.getLevel().getScales().get(j).getScale();
+			if(!arrayInspected.isEmpty()) {
+				float card_positionX, card_positionY;
+				Texture cardTexture;
+				Card card = arrayInspected.get(arrayInspected.size() - 1); 
+				card_positionX = card.getPositionX();
+				card_positionY = card.getPositionY();
+				cardTexture = texturesHashMap.get(card.getSuit())[(int) (card.getNumber() - 1)];
+				
+				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
+				font.getData().setScale(1.0f, 1.0f);
+				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
+				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
+			}
+		}
+
+		
+		drawMenuDuringGame();
+		
+		batch.draw(loaderTexture.textureScoreButton, screen_width/2 + 570, 45, screen_width/26, screen_height/17);
+		batch.draw(loaderTexture.textureTimeButton, screen_width/3 - 480, 45, screen_width/24, screen_height/15);
+
+		
+		drawInfo();
+		
+		if(this.game.isPaused()) {
+			drawPausedGameMenu();
+		}
+
+		batch.end();
+	}
+
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
+
+	public void dispose() {
+		this.batch.dispose();
+	}
+	
+	
+	
+	///////////
+	///// INIT METHODS
+	
+	public void initTexturesHashMaps() {
+		this.texturesHashMap = new HashMap<String, Texture[]>() {
 			{
 				put("Flowers",
 						new Texture[] { loaderTexture.textureAceFlowers, loaderTexture.textureTwoFlowers,
@@ -105,7 +208,7 @@ public class GameGui {
 			}
 		};
 
-		HashMap<String, Texture[]> selectedTextures = new HashMap<String, Texture[]>() {
+		this.selectedTexturesHashMap = new HashMap<String, Texture[]>() {
 			{
 				put("Flowers",
 						new Texture[] { loaderTexture.textureAceFlowersSelected, loaderTexture.textureTwoFlowersSelected,
@@ -133,110 +236,63 @@ public class GameGui {
 								loaderTexture.textureQueenSquaresSelected, loaderTexture.textureKingSquaresSelected });
 			}
 		};
-
-		////
-		// DRAW PILES OF CARDS
-
-		for (int j = 0; j < this.game.getLevel().getPilesOfCards().size(); j++) {
-			Pile pileInspected = this.game.getLevel().getPilesOfCards().get(j);
-			float card_positionX, card_positionY;
-			Texture cardTexture;
-			int i = 0;
-			for (Card card : pileInspected.getCards()) {
-				card_positionX = card.getPositionX();
-				card_positionY = card.getPositionY();
-				if(card.isSelected()) {
-					cardTexture = selectedTextures.get(card.getSuit())[(int) (card.getNumber() - 1)];
-				} else {
-					cardTexture = textures.get(card.getSuit())[(int) (card.getNumber() - 1)];
+	}
+	
+	///////////
+	/////  DRAW METHODS
+	
+	public void drawPausedGameMenu() {
+		batch.draw(loaderTexture.textureBackgroundTransparent, 0, 0, screen_width, screen_height);
+		
+		if(this.game.getMenuPausedGame().getName().equals("Paused Game Menu")) {
+			batch.draw(loaderTexture.textureMenuBackground, this.game.getMenuPausedGame().getPositionX(), this.game.getMenuPausedGame().getPositionY(), this.game.getMenuPausedGame().getWidth(), this.game.getMenuPausedGame().getHeight());
+			
+			for(int i = 0; i < this.game.getMenuPausedGame().getButtons().size(); i++) {
+				for(Button button : this.game.getMenuPausedGame().getButtons()) {
+					if(button.getName().equals("Restart Game")) {
+						batch.draw(loaderTexture.textureRandomGameButton, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
+					} else if(button.getName().equals("New Game")) {
+						batch.draw(loaderTexture.textureNumberedGameButton, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
+					} else if(button.getName().equals("Back To Game")) {
+						batch.draw(loaderTexture.textureBackGameButton, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
+					}
 				}
-
-				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
-				font.getData().setScale(1.0f, 1.0f);
-				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
-				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
-
-				i++;
 			}
 		}
-
-
-
-		////
-		// DRAW CARDS IN FREE CELLS
-		for (int j = 0; j < this.game.getLevel().getFreeCells().size(); j++) {
-			ArrayList<Card> arrayInspected = this.game.getLevel().getFreeCells().get(j).getFreeCells();
-			if(!arrayInspected.isEmpty()) {
-				float card_positionX, card_positionY;
-				Texture cardTexture;
-				Card card = arrayInspected.get(0); 
-				card_positionX = card.getPositionX();
-				card_positionY = card.getPositionY();
-				if(card.isSelected()) {
-					cardTexture = selectedTextures.get(card.getSuit())[(int) (card.getNumber() - 1)];
-				} else {
-					cardTexture = textures.get(card.getSuit())[(int) (card.getNumber() - 1)];
+	}
+	
+	
+	
+	public void drawMenuDuringGame() {
+		for(int i = 0; i < this.game.getMenuDuringGameButtons().size(); i++) {
+			for(Button button : this.game.getMenuDuringGameButtons()) {
+				if(button.getName().equals("Exit")) {
+					batch.draw(loaderTexture.texturePauseButton, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
+					font.draw(batch, String.valueOf(button.getPositionX()), button.getPositionX(), button.getPositionY());
+					font.draw(batch, String.valueOf(button.getPositionY()), button.getPositionX() + 40, button.getPositionY());
+				} else if(button.getName().equals("Menu")) {
+					batch.draw(loaderTexture.textureCardsGameMenu, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
+					font.draw(batch, String.valueOf(button.getPositionX()), button.getPositionX(), button.getPositionY());
+					font.draw(batch, String.valueOf(button.getPositionY()), button.getPositionX() + 40, button.getPositionY());
+				} else if(button.getName().equals("Hint")) {
+					batch.draw(loaderTexture.textureUndoButton, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
+					font.draw(batch, String.valueOf(button.getPositionX()), button.getPositionX(), button.getPositionY());
+					font.draw(batch, String.valueOf(button.getPositionY()), button.getPositionX() + 40, button.getPositionY());
 				}
-
-				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
-				font.getData().setScale(1.0f, 1.0f);
-				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
-				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
 			}
 		}
-
-
-
-		////
-		// DRAW CARDS OF SCALES
-		for (int j = 0; j < this.game.getLevel().getScales().size(); j++) {
-			ArrayList<Card> arrayInspected = this.game.getLevel().getScales().get(j).getScale();
-			if(!arrayInspected.isEmpty()) {
-				float card_positionX, card_positionY;
-				Texture cardTexture;
-				Card card = arrayInspected.get(arrayInspected.size() - 1); 
-				card_positionX = card.getPositionX();
-				card_positionY = card.getPositionY();
-				cardTexture = textures.get(card.getSuit())[(int) (card.getNumber() - 1)];
-				
-				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
-				font.getData().setScale(1.0f, 1.0f);
-				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
-				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
-			}
-		}
-
-		//
-		batch.draw(loaderTexture.textureCardsGameMenu, screen_width/2 - 70, 45, screen_width/24, screen_height/16);
-		batch.draw(loaderTexture.texturePauseButton, screen_width/2 - 289, 45, screen_width/25, screen_height/16);
-		batch.draw(loaderTexture.textureUndoButton, screen_width/2 + 152, 45, screen_width/24, screen_height/16);
-		batch.draw(loaderTexture.textureScoreButton, screen_width/2 + 570, 45, screen_width/26, screen_height/17);
-		batch.draw(loaderTexture.textureTimeButton, screen_width/3 - 480, 45, screen_width/24, screen_height/15);
-
+	}
+	
+	
+	public void drawInfo() {
 		font.getData().setScale(fontSizeX * 3, fontSizeY * 3);
 		font.draw(batch, "Menu", screen_width/2 - 58, 33);
 		font.draw(batch, "Exit", screen_width/2 - 268, 33);
 		font.draw(batch, "Hint", screen_width/2 + 172, 33);
 		
 		font.getData().setScale(fontSizeX * 4, fontSizeY * 4);
-		font.draw(batch, "01:00", screen_width/3 - 380, 90);
-		font.draw(batch, "100", screen_width/2 + 670, 90);
-		
-		batch.draw(loaderTexture.textureBackgroundTransparent, 0, 0, screen_width, screen_height);
-		batch.draw(loaderTexture.textureMenuBackground, screen_width/3 + 100, screen_height/4, screen_width/4, screen_height/3 + 200);
-		batch.draw(loaderTexture.textureBackGameButton, screen_width/3 + 165, screen_height/4 + 80, 350, 110);
-		batch.draw(loaderTexture.textureNumberedGameButton, screen_width/3 + 165, screen_height/4 + 190, 350, 110);
-		batch.draw(loaderTexture.textureRandomGameButton, screen_width/3 + 165, screen_height/4 + 300, 350, 110);
-
-		batch.end();
-	}
-
-	public OrthographicCamera getCamera() {
-		return camera;
-	}
-
-	public void dispose() {
-		this.batch.dispose();
+		font.draw(batch, String.valueOf(this.game.getMovement()), screen_width/3 - 380, 90);
+		font.draw(batch, String.valueOf(this.game.getScore()), screen_width/2 + 670, 90);
 	}
 }
 

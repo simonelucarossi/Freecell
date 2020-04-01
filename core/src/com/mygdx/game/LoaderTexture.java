@@ -23,7 +23,7 @@ public class LoaderTexture {
 	public Texture textureKingFlowersSelected, textureKingSpadesSelected, textureKingHeartsSelected, textureKingSquaresSelected;
 	
 	
-	public Texture textureEmptyBoxe, textureScales, textureAces, textureMenuGameBackground, textureCardsGameMenu, texturePlayButton, texturePauseButton, textureUndoButton, textureScoreButton, textureTimeButton, textureMenuBackground;
+	public Texture textureEmptyBoxe, textureEmptyBoxePiles, textureScales, textureAces, textureMenuGameBackground, textureCardsGameMenu, texturePlayButton, texturePauseButton, textureUndoButton, textureScoreButton, textureTimeButton, textureMenuBackground;
 	public Texture textureBackGameButton, textureRandomGameButton, textureNumberedGameButton, textureBackgroundTransparent;
 	
 	public LoaderTexture() {
@@ -167,6 +167,7 @@ public class LoaderTexture {
 		/* LOADING SYSTEM TEXTURES  */
 		textureBackgroundTable = new Texture("background_1.jpg");
 		textureEmptyBoxe = new Texture("empty_box.png");
+		textureEmptyBoxePiles = new Texture("empty_box_piles.png");
 		textureScales = new Texture("scales.png");
 		textureAces = new Texture("aces.png");
 		textureMenuGameBackground = new Texture("menu_game_background.png");

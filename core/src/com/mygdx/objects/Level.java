@@ -2,6 +2,9 @@ package com.mygdx.objects;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 
 public class Level {
 	private ArrayList<Pile> pilesOfCards;
@@ -21,6 +24,43 @@ public class Level {
 		h = dimensions.height;
 		create();
 	}
+	
+	public Level(Level l) {
+		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		
+		freeCells = new ArrayList<FreeCell>();
+		scales = new ArrayList<Scale>();
+		pilesOfCards = new ArrayList<Pile>();
+		
+		/* 
+		freeCells.add(new FreeCell(264 + (0 * w/11 - 2), (h - 220), w/16, h/7, 8));
+		freeCells.add(new FreeCell(264 + (1 * w/11 - 2), (h - 220), w/16, h/7, 9));
+		freeCells.add(new FreeCell(264 + (2 * w/11 - 2), (h - 220), w/16, h/7, 10));
+		freeCells.add(new FreeCell(264 + (3 * w/11 - 2), (h - 220), w/16, h/7, 11));
+		*/
+		
+		freeCells.add(new FreeCell(20, (h - 1 * 220), w/17, h/7, 8));
+		freeCells.add(new FreeCell(20, (h - 2 * 220), w/17, h/7, 9));
+		freeCells.add(new FreeCell(20, (h - 3 * 220), w/17, h/7, 10));
+		freeCells.add(new FreeCell(20, (h - 4 * 220), w/17, h/7, 11));
+		
+		
+		
+
+		scales.add(new Scale((w - 150), (h - 1 * 220), w/17, h/7, 12));
+		scales.add(new Scale((w - 150), (h - 2 * 220), w/17, h/7, 13));
+		scales.add(new Scale((w - 150), (h - 3 * 220), w/17, h/7, 14));
+		scales.add(new Scale((w - 150), (h - 4 * 220), w/17, h/7, 15));
+
+		generatePilesOfCards();
+		
+		w = dimensions.width;
+		h = dimensions.height;
+		cloneLevel(l);
+	}
+	
+	
+	
 	
 	//////
 	// CREATE THE LEVEL
@@ -151,6 +191,41 @@ public class Level {
 		}
 		
 		return numberPile;
+	}
+	
+	
+	//////
+	// COPY ANOTHER LEVEL
+	
+	public void cloneLevel(Level lPassed) {
+		
+		clearLevel();
+		
+		for(int i = 0; i < lPassed.getPilesOfCards().size(); i++) {
+			for(Card cardM : lPassed.getPilesOfCards().get(i).getCards()) {
+				this.pilesOfCards.get(i).insertCard(new Card(cardM.getNumber(), cardM.getColor(), cardM.getSuit(), cardM.getColumn(), cardM.getPositionX(), cardM.getPositionY()));
+			}
+		}
+		
+		
+	}
+	
+	
+	//////
+	// CLEAN ALL ARRAY OF THE LEVEL
+	
+	public void clearLevel() {
+		for(int i = 0; i < this.freeCells.size(); i++) {
+			this.freeCells.get(i).getFreeCells().clear();;
+		}
+		
+		for(int i = 0; i < scales.size(); i++) {
+			this.scales.get(i).getScale().clear();
+		}
+		
+		for(int i = 0; i < this.pilesOfCards.size(); i++) {
+			this.pilesOfCards.get(i).getStackOfCards().clear();
+		}
 	}
 	
 	

@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.objects.Button;
 import com.mygdx.objects.Card;
 import com.mygdx.objects.FreeCell;
 import com.mygdx.objects.Pile;
@@ -26,8 +27,9 @@ public class GameManager implements ApplicationListener {
 	private GameOfCards game;
 	private GameGui gameGui;
 	private ArrayList<Card> selectedCards;
+	private Vector3 tp, mousePosition;
+
 	long firstClick;
-	boolean pause;
 
 
 	@Override
@@ -35,8 +37,8 @@ public class GameManager implements ApplicationListener {
 		this.game = new GameOfCards();
 		this.gameGui = new GameGui(game);
 		this.firstClick = 0;
-		this.pause = true;
-		
+		this.tp = new Vector3();
+
 		this.selectedCards = new ArrayList<Card>();
 	}
 
@@ -46,15 +48,17 @@ public class GameManager implements ApplicationListener {
 
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 			long secondClick = System.currentTimeMillis();
-			if(secondClick - firstClick > 20000) {
-				Vector3 tp = new Vector3();
-				Vector3 mousePosition = gameGui.getCamera().unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+			if(secondClick - firstClick > 500) {
+				this.mousePosition = gameGui.getCamera().unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 				System.out.println("CLICK DEL MOUSE! " + mousePosition.x + " " + mousePosition.y);
 
 
 				checkMouseClick(mousePosition);
+				firstClick = secondClick;
 			}
 		}
+
+
 	}
 
 	@Override
@@ -82,19 +86,27 @@ public class GameManager implements ApplicationListener {
 	}
 
 	public void checkMouseClick(Vector3 mousePosition) {
+		if(!(this.game.isPaused())) {
+			if(this.selectedCards.isEmpty()) {
+				tryCardSelection(mousePosition);
+				tryFreeCellSelection(mousePosition);
+				if(this.game.getScore() >= 50)
+					tryClickButton(mousePosition);
+			} else {
+				if(tryCardMovement(mousePosition)) {
+					System.out.println("CARTA MOSSA!!!!!!!!!!!!!!!");
+					this.game.setScore(this.game.getScore() + 10);
+					this.game.setMovement(this.game.getMovement() + 1);
+				}
 
-		if(this.selectedCards.isEmpty()) {
-			tryCardSelection(mousePosition);
-			tryFreeCellSelection(mousePosition);
-			tryClickButton(mousePosition);
+				else {
+					deselectCards();
+					if(this.game.getScore() >= 50)
+						tryClickButton(mousePosition);
+				}
+			}
 		} else {
-			if(tryCardMovement(mousePosition)) {
-
-			}
-
-			else {
-				deselectCards();
-			}
+			tryClickMenuPausedGameButton(mousePosition);
 		}
 	}
 
@@ -163,6 +175,41 @@ public class GameManager implements ApplicationListener {
 
 
 
+	}
+
+
+
+	public void tryClickButton(Vector3 mousePosition) {
+
+		startButtonAction(this.game.getMenuDuringGameButtons().get(1));
+
+		for(int i = 0; i < this.game.getMenuDuringGameButtons().size(); i++) {
+			for(Button button : this.game.getMenuDuringGameButtons()) {
+				if(mousePosition.x >= button.getPositionX() &&
+						mousePosition.x  <= (button.getPositionX() + button.getWidth()) &&
+						mousePosition.y >= button.getPositionY() &&
+						mousePosition.y  <= (button.getPositionY() + button.getHeight())
+						) {
+					startButtonAction(button);
+				}
+			}
+		}
+	}
+	
+	public void tryClickMenuPausedGameButton(Vector3 mousePosition) {
+		startButtonAction(this.game.getMenuPausedGame().getButtons().get(0));
+
+		for(int i = 0; i < this.game.getMenuPausedGame().getButtons().size(); i++) {
+			for(Button button : this.game.getMenuPausedGame().getButtons()) {
+				if(mousePosition.x >= button.getPositionX() &&
+						mousePosition.x  <= (button.getPositionX() + button.getWidth()) &&
+						mousePosition.y >= button.getPositionY() &&
+						mousePosition.y  <= (button.getPositionY() + button.getHeight())
+						) {
+					startButtonAction(button);
+				}
+			}
+		}
 	}
 
 
@@ -250,9 +297,11 @@ public class GameManager implements ApplicationListener {
 			{
 				if(movingCardsFromPilesOfCards(selectedCards)) {
 					moveSelectedCards(cardInspection);
+					return true;
 				}
 				else {
 					moveSelectedCardsFromFreeCellToPilesOfCards(cardInspection);
+					return true;
 				}
 			} 
 		}
@@ -269,11 +318,10 @@ public class GameManager implements ApplicationListener {
 					mousePosition.y >= cellInspected.getPositionY() &&
 					mousePosition.y  <= (cellInspected.getPositionY() + cellInspected.getHeight()))
 			{
-				//				System.out.println("Cella controllata: " + cellInspected.getColumn());
-				//				System.out.println("Oggetti: " + cellInspected.getFreeCells().toString());
 				cardCellInspected = new Card(0,"R","R", cellInspected.getColumn(), cellInspected.getPositionX(), cellInspected.getPositionY());
 				if(movingCardsFromPilesOfCards(selectedCards)) {
 					moveSelectedCardsToCells(cardCellInspected);
+					return true;
 				}
 			} 
 		}
@@ -293,9 +341,11 @@ public class GameManager implements ApplicationListener {
 				cardScaleInspected = new Card(0,"R","R", scaleInspected.getColumn(), scaleInspected.getPositionX(), scaleInspected.getPositionY());
 				if(movingCardsFromPilesOfCards(selectedCards)) {
 					moveSelectedCardsToScale(cardScaleInspected);
+					return true;
 				}
 				else {
 					moveSelectedCardsFromFreeCellToScale(cardScaleInspected);
+					return true;
 				}
 			} 
 		}
@@ -393,7 +443,7 @@ public class GameManager implements ApplicationListener {
 	public boolean movingCardsFromPilesOfCards(ArrayList<Card> selectedCards) {
 		return (selectedCards.get(0).getColumn() < 8);
 	}
-	
+
 	public void moveSelectedCardsFromFreeCellToPilesOfCards(Card cardPassed) {
 		Card cardInspection = this.selectedCards.get(this.selectedCards.size() - 1);
 		int columnWhereInsert = cardPassed.getColumn();
@@ -410,7 +460,7 @@ public class GameManager implements ApplicationListener {
 		this.selectedCards.clear();
 	}
 
-	
+
 	public void moveSelectedCardsFromFreeCellToScale(Card cardPassed) {
 		Card cardInspection = this.selectedCards.get(this.selectedCards.size() - 1);
 		int columnWhereInsert = cardPassed.getColumn();
@@ -426,8 +476,29 @@ public class GameManager implements ApplicationListener {
 
 		this.selectedCards.clear();
 	}
-	
-	public void tryClickButton(Vector3 mousePosition) {
-		
+
+
+	public void startButtonAction(Button button) {
+
+		if(button.getName().equals("Exit")) {
+			Gdx.app.exit();
+			System.exit(0);
+		} else if(button.getName().equals("Menu")) {
+			this.game.setPaused(!(this.game.isPaused()));
+		} else if(button.getName().equals("Hint")) {
+
+		} else if(button.getName().equals("New Game")) {
+			System.out.println("NEW GAME");
+			this.game.newGame();
+			this.game.setPaused(!(this.game.isPaused()));
+		} else if(button.getName().equals("Restart Game")) {
+			this.game.restart();
+			this.game.setPaused(!(this.game.isPaused()));
+			System.out.println("RESTART GAME");
+		} else if(button.getName().equals("Back To Game")) {
+			this.game.setPaused(!(this.game.isPaused()));
+		}
+
 	}
+
 }

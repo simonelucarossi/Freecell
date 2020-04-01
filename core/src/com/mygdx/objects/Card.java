@@ -83,7 +83,7 @@ public class Card {
 	/**
 	 * @return the number
 	 */
-	public float getNumber() {
+	public int getNumber() {
 		return number;
 	}
 
