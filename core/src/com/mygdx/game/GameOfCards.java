@@ -1,6 +1,8 @@
 package com.mygdx.game;
 
 import java.awt.Dimension;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -15,11 +17,11 @@ public class GameOfCards {
 	private int screen_width, screen_height;
 	private ArrayList<Button> menuDuringGameButtons, buttonsMenuPausedGame;
 	private Menu menuPausedGame;
-	private boolean paused;
+	private boolean paused, win;
 	
 	Dimension dimensions;
 	
-	public GameOfCards() {
+	public GameOfCards() throws IOException {
 		
 		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		this.screen_width = dimensions.width;
@@ -42,20 +44,23 @@ public class GameOfCards {
 		this.menuDuringGameButtons.add(new Button("Hint", screen_width/2 + 152, 45, screen_width/24, screen_height/16));
 	
 		this.paused = false;
+		this.win = true;
 	}
 	
-	public void newGame() {
+	public void newGame() throws IOException {
 		this.level.clearLevel();
 		this.level.generateCards();
 		this.score = 0;
 		this.movement = 0;
 		this.levelBackup.cloneLevel(this.level);
+		this.win = false;
 	}
 	
 	public void restart() {
 			this.level.cloneLevel(levelBackup);
 			this.score = 0;
 			this.movement = 0;
+			this.win = false;
 	}
 
 	/**
@@ -210,6 +215,34 @@ public class GameOfCards {
 	 */
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+	}
+
+	/**
+	 * @return the levelBackup
+	 */
+	public Level getLevelBackup() {
+		return levelBackup;
+	}
+
+	/**
+	 * @param levelBackup the levelBackup to set
+	 */
+	public void setLevelBackup(Level levelBackup) {
+		this.levelBackup = levelBackup;
+	}
+
+	/**
+	 * @return the win
+	 */
+	public boolean isWin() {
+		return win;
+	}
+
+	/**
+	 * @param win the win to set
+	 */
+	public void setWin(boolean win) {
+		this.win = win;
 	}
 	
 	

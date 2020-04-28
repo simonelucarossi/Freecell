@@ -1,6 +1,8 @@
 package com.mygdx.objects;
 
 import java.awt.Dimension;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
@@ -10,11 +12,12 @@ public class Level {
 	private ArrayList<Pile> pilesOfCards;
 	private ArrayList<FreeCell> freeCells;
 	private ArrayList<Scale> scales;
+	private BufferReader reader;
 	Dimension dimensions;
 	private int w,h;
 	
 	
-	public Level() {
+	public Level() throws IOException {
 		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		
 		
@@ -65,7 +68,7 @@ public class Level {
 	//////
 	// CREATE THE LEVEL
 	
-	public void create() {
+	public void create() throws IOException {
 
 		freeCells = new ArrayList<FreeCell>();
 		scales = new ArrayList<Scale>();
@@ -107,7 +110,15 @@ public class Level {
 	//////
 	// GENERATE CARDS TO INSERT IN THE 8 PILES
 	
-	public void generateCards() {
+	public void generateCards() throws IOException {
+		this.reader = new BufferReader(1);
+		
+		this.reader.readLine();
+		while(this.reader.hasLine()) {
+			System.out.println(this.reader.getLineReaded());
+			this.reader.readLine();
+		}
+		
 		int numberPile, generatedNumber = 0, columnWhereInsert = 0;
 		float positionXWhereInsert, positionYWhereInsert;
 		Card generatedCard;

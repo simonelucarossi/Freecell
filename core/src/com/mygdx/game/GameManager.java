@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
@@ -34,7 +36,11 @@ public class GameManager implements ApplicationListener {
 
 	@Override
 	public void create () {
-		this.game = new GameOfCards();
+		try {
+			this.game = new GameOfCards();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.gameGui = new GameGui(game);
 		this.firstClick = 0;
 		this.tp = new Vector3();
@@ -53,11 +59,19 @@ public class GameManager implements ApplicationListener {
 				System.out.println("CLICK DEL MOUSE! " + mousePosition.x + " " + mousePosition.y);
 
 
-				checkMouseClick(mousePosition);
+				try {
+					checkMouseClick(mousePosition);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				firstClick = secondClick;
 			}
 		}
 
+		checkGameVictory();
 
 	}
 
@@ -85,7 +99,7 @@ public class GameManager implements ApplicationListener {
 
 	}
 
-	public void checkMouseClick(Vector3 mousePosition) {
+	public void checkMouseClick(Vector3 mousePosition) throws IOException {
 		if(!(this.game.isPaused())) {
 			if(this.selectedCards.isEmpty()) {
 				tryCardSelection(mousePosition);
@@ -179,7 +193,7 @@ public class GameManager implements ApplicationListener {
 
 
 
-	public void tryClickButton(Vector3 mousePosition) {
+	public void tryClickButton(Vector3 mousePosition) throws IOException {
 
 		startButtonAction(this.game.getMenuDuringGameButtons().get(1));
 
@@ -196,7 +210,7 @@ public class GameManager implements ApplicationListener {
 		}
 	}
 	
-	public void tryClickMenuPausedGameButton(Vector3 mousePosition) {
+	public void tryClickMenuPausedGameButton(Vector3 mousePosition) throws IOException {
 		startButtonAction(this.game.getMenuPausedGame().getButtons().get(0));
 
 		for(int i = 0; i < this.game.getMenuPausedGame().getButtons().size(); i++) {
@@ -478,7 +492,7 @@ public class GameManager implements ApplicationListener {
 	}
 
 
-	public void startButtonAction(Button button) {
+	public void startButtonAction(Button button) throws IOException {
 
 		if(button.getName().equals("Exit")) {
 			Gdx.app.exit();
@@ -499,6 +513,15 @@ public class GameManager implements ApplicationListener {
 			this.game.setPaused(!(this.game.isPaused()));
 		}
 
+	}
+	
+	public void checkGameVictory() {
+		if(this.game.getLevel().getScales().get(0).getScale().size() + 
+				this.game.getLevel().getScales().get(1).getScale().size() + 
+				this.game.getLevel().getScales().get(2).getScale().size() + 
+				this.game.getLevel().getScales().get(3).getScale().size() == 52) {
+			this.game.setWin(true);
+		}
 	}
 
 }
