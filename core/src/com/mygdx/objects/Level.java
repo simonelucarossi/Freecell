@@ -111,66 +111,198 @@ public class Level {
 	// GENERATE CARDS TO INSERT IN THE 8 PILES
 	
 	public void generateCards() throws IOException {
-		this.reader = new BufferReader(1);
+		int columnWhereInsert = 0;
+		float positionXWhereInsert, positionYWhereInsert;
+		Card generatedCard = null;
+		
+		this.reader = new BufferReader(3);
 		
 		this.reader.readLine();
 		while(this.reader.hasLine()) {
-			System.out.println(this.reader.getLineReaded());
+			columnWhereInsert = 0;
+			
+			for (String a : this.reader.getLineReaded().split(" ")) {
+				
+				//// GENERATES CARDS
+				positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
+				positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
+				
+				//// HEARTS
+				if(a.equals("AH")) {
+					generatedCard = new Card(1, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				} 
+				else if(a.equals("2H")) {
+					generatedCard = new Card(2, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("3H")) {
+					generatedCard = new Card(3, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("4H")) {
+					generatedCard = new Card(4, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("5H")) {
+					generatedCard = new Card(5, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("6H")) {
+					generatedCard = new Card(6, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("7H")) {
+					generatedCard = new Card(7, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("8H")) {
+					generatedCard = new Card(8, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("9H")) {
+					generatedCard = new Card(9, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("10H")) {
+					generatedCard = new Card(10, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("JH")) {
+					generatedCard = new Card(11, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("QH")) {
+					generatedCard = new Card(12, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("KH")) {
+					generatedCard = new Card(13, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				
+				//// FLOWERS
+				
+				if(a.equals("AF")) {
+					generatedCard = new Card(1, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				} 
+				else if(a.equals("2F")) {
+					generatedCard = new Card(2, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("3F")) {
+					generatedCard = new Card(3, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("4F")) {
+					generatedCard = new Card(4, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("5F")) {
+					generatedCard = new Card(5, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("6F")) {
+					generatedCard = new Card(6, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("7F")) {
+					generatedCard = new Card(7, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("8F")) {
+					generatedCard = new Card(8, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("9F")) {
+					generatedCard = new Card(9, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("10F")) {
+					generatedCard = new Card(10, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("JF")) {
+					generatedCard = new Card(11, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("QF")) {
+					generatedCard = new Card(12, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("KF")) {
+					generatedCard = new Card(13, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				
+				//// SPADES
+				
+				if(a.equals("ASP")) {
+					generatedCard = new Card(1, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				} 
+				else if(a.equals("2SP")) {
+					generatedCard = new Card(2, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("3SP")) {
+					generatedCard = new Card(3, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("4SP")) {
+					generatedCard = new Card(4, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("5SP")) {
+					generatedCard = new Card(5, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("6SP")) {
+					generatedCard = new Card(6, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("7SP")) {
+					generatedCard = new Card(7, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("8SP")) {
+					generatedCard = new Card(8, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("9SP")) {
+					generatedCard = new Card(9, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("10SP")) {
+					generatedCard = new Card(10, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("JSP")) {
+					generatedCard = new Card(11, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("QSP")) {
+					generatedCard = new Card(12, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("KSP")) {
+					generatedCard = new Card(13, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				
+				
+				//// SQUARES
+				
+				if(a.equals("ASQ")) {
+					generatedCard = new Card(1, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				} 
+				else if(a.equals("2SQ")) {
+					generatedCard = new Card(2, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("3SQ")) {
+					generatedCard = new Card(3, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("4SQ")) {
+					generatedCard = new Card(4, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("5SQ")) {
+					generatedCard = new Card(5, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("6SQ")) {
+					generatedCard = new Card(6, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("7SQ")) {
+					generatedCard = new Card(7, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("8SQ")) {
+					generatedCard = new Card(8, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("9SQ")) {
+					generatedCard = new Card(9, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("10SQ")) {
+					generatedCard = new Card(10, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("JSQ")) {
+					generatedCard = new Card(11, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("QSQ")) {
+					generatedCard = new Card(12, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				else if(a.equals("KSQ")) {
+					generatedCard = new Card(13, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
+				}
+				
+				this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
+				///////
+	            columnWhereInsert++;
+			}
 			this.reader.readLine();
 		}
 		
-		int numberPile, generatedNumber = 0, columnWhereInsert = 0;
-		float positionXWhereInsert, positionYWhereInsert;
-		Card generatedCard;
-
-
-		for(int i = 1; i < 14; i++) {
-			numberPile = 9;
-			
-			columnWhereInsert = generateColumnWhereInsertCard(numberPile, generatedNumber);
-			positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
-			positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
-			
-			generatedCard = new Card(i, "Black", "Flowers", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
-			this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
-		}
-
 		
-		for(int i = 1; i < 14; i++) {
-			numberPile = 9;
-			
-			columnWhereInsert = generateColumnWhereInsertCard(numberPile, generatedNumber);
-			positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
-			positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
-			
-			generatedCard = new Card(i, "Red", "Hearts", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
-			this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
-		}
-
-		
-		for(int i = 1; i < 14; i++) {
-			numberPile = 9;
-			
-			columnWhereInsert = generateColumnWhereInsertCard(numberPile, generatedNumber);
-			positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
-			positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
-			
-			generatedCard = new Card(i, "Black", "Spades", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
-			this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
-		}
-
-		
-		for(int i = 1; i < 14; i++) {
-			numberPile = 9;
-			
-			columnWhereInsert = generateColumnWhereInsertCard(numberPile, generatedNumber);
-			positionXWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionX(); 
-			positionYWhereInsert = this.pilesOfCards.get(columnWhereInsert).getPositionY() - (h/31 * this.pilesOfCards.get(columnWhereInsert).getSize());
-			
-			generatedCard = new Card(i, "Red", "Squares", columnWhereInsert, positionXWhereInsert, positionYWhereInsert);
-			this.pilesOfCards.get(generatedCard.getColumn()).insertCard(generatedCard);
-		}
-
 	}
 	
 	//////

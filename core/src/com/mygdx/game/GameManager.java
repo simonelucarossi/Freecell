@@ -21,7 +21,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.objects.Button;
 import com.mygdx.objects.Card;
+import com.mygdx.objects.DlvRunner;
 import com.mygdx.objects.FreeCell;
+import com.mygdx.objects.IAwriter;
 import com.mygdx.objects.Pile;
 import com.mygdx.objects.Scale;
 
@@ -30,6 +32,7 @@ public class GameManager implements ApplicationListener {
 	private GameGui gameGui;
 	private ArrayList<Card> selectedCards;
 	private Vector3 tp, mousePosition;
+	private IAwriter iaWriter;
 
 	long firstClick;
 
@@ -55,8 +58,11 @@ public class GameManager implements ApplicationListener {
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 			long secondClick = System.currentTimeMillis();
 			if(secondClick - firstClick > 500) {
+				this.game.emptySpaces = new ArrayList<Vector2d>();
+				
 				this.mousePosition = gameGui.getCamera().unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-				System.out.println("CLICK DEL MOUSE! " + mousePosition.x + " " + mousePosition.y);
+				
+				//System.out.println("CLICK DEL MOUSE! " + mousePosition.x + " " + mousePosition.y);
 
 
 				try {
@@ -69,6 +75,7 @@ public class GameManager implements ApplicationListener {
 				}
 				firstClick = secondClick;
 			}
+			
 		}
 
 		checkGameVictory();
@@ -108,7 +115,6 @@ public class GameManager implements ApplicationListener {
 					tryClickButton(mousePosition);
 			} else {
 				if(tryCardMovement(mousePosition)) {
-					System.out.println("CARTA MOSSA!!!!!!!!!!!!!!!");
 					this.game.setScore(this.game.getScore() + 10);
 					this.game.setMovement(this.game.getMovement() + 1);
 				}
@@ -195,7 +201,7 @@ public class GameManager implements ApplicationListener {
 
 	public void tryClickButton(Vector3 mousePosition) throws IOException {
 
-		startButtonAction(this.game.getMenuDuringGameButtons().get(1));
+		startButtonAction(this.game.getMenuDuringGameButtons().get(2));
 
 		for(int i = 0; i < this.game.getMenuDuringGameButtons().size(); i++) {
 			for(Button button : this.game.getMenuDuringGameButtons()) {
@@ -500,7 +506,37 @@ public class GameManager implements ApplicationListener {
 		} else if(button.getName().equals("Menu")) {
 			this.game.setPaused(!(this.game.isPaused()));
 		} else if(button.getName().equals("Hint")) {
-
+			String resultCommandLine = null;
+			iaWriter = new IAwriter();
+			iaWriter.writeOnFile(this.game);
+			DlvRunner dlvRunner = new DlvRunner();
+			
+			resultCommandLine = dlvRunner.readedLine;
+			int resultPos = 0;
+			if(resultCommandLine == null) {
+				createEmptySpace();
+			} else {
+				String[] str = resultCommandLine.split(",");
+				for(String a: str) {
+					resultPos++;
+					if(resultPos == 1 ) {
+						System.out.println(a.replace("{move(","NUMERO CARTA: "));
+					}
+					else if(resultPos == 2) {
+						System.out.println("COLONNA:"+ a);
+					}
+						
+					else if (resultPos == 5) {
+						System.out.println(a.replace(")}",""));
+					}
+						
+				}
+				createCardsToMove(resultCommandLine);
+			}
+			
+			
+			
+			
 		} else if(button.getName().equals("New Game")) {
 			System.out.println("NEW GAME");
 			this.game.newGame();
@@ -523,5 +559,17 @@ public class GameManager implements ApplicationListener {
 			this.game.setWin(true);
 		}
 	}
+	
+	public void createEmptySpace() {
+		for(int i = 0; i < this.game.getLevel().getFreeCells().size(); i++) {
+			if(this.game.getLevel().getFreeCells().get(i).getFreeCells().isEmpty()) {
+				this.game.emptySpaces.add(new Vector2d(this.game.getLevel().getFreeCells().get(i).getPositionX(), this.game.getLevel().getFreeCells().get(i).getPositionY()));
+			}
+		}
+	}
 
+	
+	public void createCardsToMove(String line) {
+		
+	}
 }

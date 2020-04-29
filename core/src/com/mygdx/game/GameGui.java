@@ -167,6 +167,13 @@ public class GameGui {
 		if((this.game.isWin())) {
 			drawVictory();
 		}
+		
+		if(this.game.emptySpaces.size() > 0) {
+			for(int i = 0; i < this.game.emptySpaces.size();i++) {
+				batch.draw(loaderTexture.iaTexture, this.game.emptySpaces.get(i).x, this.game.emptySpaces.get(i).y, screen_width/17, screen_height/6 - 25);
+			}
+		}
+		
 
 		batch.end();
 	}

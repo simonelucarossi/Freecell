@@ -18,10 +18,13 @@ public class GameOfCards {
 	private ArrayList<Button> menuDuringGameButtons, buttonsMenuPausedGame;
 	private Menu menuPausedGame;
 	private boolean paused, win;
+	public ArrayList<Vector2d> emptySpaces, cardsToMove;
 	
 	Dimension dimensions;
 	
 	public GameOfCards() throws IOException {
+		emptySpaces = new ArrayList<Vector2d>();
+		cardsToMove = new ArrayList<Vector2d>();
 		
 		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		this.screen_width = dimensions.width;
@@ -44,7 +47,7 @@ public class GameOfCards {
 		this.menuDuringGameButtons.add(new Button("Hint", screen_width/2 + 152, 45, screen_width/24, screen_height/16));
 	
 		this.paused = false;
-		this.win = true;
+		this.win = false;
 	}
 	
 	public void newGame() throws IOException {

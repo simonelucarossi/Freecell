@@ -24,7 +24,7 @@ public class LoaderTexture {
 	
 	
 	public Texture textureEmptyBoxe, textureEmptyBoxePiles, textureScales, textureAces, textureMenuGameBackground, textureCardsGameMenu, texturePlayButton, texturePauseButton, textureUndoButton, textureScoreButton, textureTimeButton, textureMenuBackground;
-	public Texture textureBackGameButton, textureRandomGameButton, textureNumberedGameButton, textureBackgroundTransparent, textureVictory;
+	public Texture textureBackGameButton, textureRandomGameButton, textureNumberedGameButton, textureBackgroundTransparent, textureVictory, iaTexture;
 	
 	public LoaderTexture() {
 		
@@ -183,6 +183,8 @@ public class LoaderTexture {
 		textureRandomGameButton = new Texture("random_game_button.png");
 		textureNumberedGameButton = new Texture("numbered_game_button.png");
 		textureBackgroundTransparent = new Texture("background_transparent.png");
+		
+		iaTexture = new Texture("ia_box.png");
 		
 		textureVictory = new Texture("victory.png");
 	}
