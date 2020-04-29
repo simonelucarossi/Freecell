@@ -1,0 +1,49 @@
+% IA
+
+lastCards(Column, Pos, Color) :- #max{Q: cards(_,Column,_,_,Q)} = Pos, cards(Num,Column,Color,Suit,Pos).
+
+move(Num, Column, Color, Suit, Pos) v noMove(Num, Column, Color, Suit, Pos) :- cards(Num, Column, Color, Suit, Pos).
+minimumCard(Num, Color) :- #min{Pos : move(_, _, _, _, Pos)} = MinPos, move(Num, _, Color, _, MinPos).
+movingMoreThanOneCard :- #count{Num: move(Num,_,_,_,_)} > 1.
+
+allColumns(Column) :- cards(_, Column, _, _, _).
+selectedColumn(Column) :- move(Num, Column, Color, Suit, Pos).
+unselectedColumns(Column) v selectedColumn(Column) :- allColumns(Column).
+
+selectedPositions(Pos) :- move(Num, Column, Color, Suit, Pos).
+moveAdjacency(Pos,Pos2) :- move(Num, Column, _, _, Pos), move(Num2, Column, _, _, Pos2), Pos < Pos2.
+
+% CONSTRAINTS
+
+:- #count{Num: move(Num,_,_,_,_)} = 0.
+:- #count{Num: move(Num,_,_,_,_)} > allowedMoves.
+
+% colonne diverse
+%
+:- #count{Column : selectedColumn(Column)} > 1.
+
+% ultima carta della colonna non presente nel risultato
+%
+:- selectedColumn(Column), lastCards(Column, Pos, _), noMove(_, Column, _, _, Pos).
+
+% due carte vicino hanno lo stesso colore
+%
+:- move(_,_,Color,_,Pos), move(_,_,Color,_,Pos2), #succ(Pos,Pos2).
+
+% due carte vicine non sono in ordine
+%
+:- move(Num,_,_,_,Pos), move(Num2,_,_,_,Pos2), #succ(Pos,Pos2), not #prec(Num,Num2).
+
+% due carte non sono vicine
+%
+:- moveAdjacency(Pos,Pos2), not #succ(Pos,Pos2).
+
+% carta sotto cui spostare
+landingCards(Num, Column, Color, Suit, Pos) :- unselectedColumns(Column), lastCards(Column, Pos, _), cards(Num, Column, Color, Suit, Pos).
+correctLandingCards(LandingNum, Column, Color, Suit, Pos) :- landingCards(LandingNum, Column, Color, Suit, Pos), minimumCard(MinimumNum, Color2), #prec(LandingNum, MinimumNum), Color != Color2.
+
+% scala in cui spostare
+landingScales(Scale) :- not movingMoreThanOneCard, move(1, _, _, _, _), scales(Scale), #count{Num : cardOnScale(Num, Scale, _)} = 0.
+landingScales(Scale) :- not movingMoreThanOneCard, move(Num, _, _, Suit, _), cardOnScale(LandingNum, Scale, Suit), #succ(LandingNum, Num).
+
+:- #count{Column : correctLandingCards(Column, _, _, _, _)} = 0, #count{Scales : landingScales(Scales)} = 0.
