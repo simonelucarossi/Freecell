@@ -29,7 +29,7 @@ public class IAwriter {
 	}
 
 	public void writeOnFile(GameOfCards game) throws IOException {
-		this.writer.write("#const allowedMoves = 4. \n");
+		this.writer.write("#const allowedMoves = " + game.availableToMove() + ". \n");
 		writeCards(game);
 		writeScales(game);
 		writeCardsInFreeCells(game);
@@ -73,15 +73,14 @@ public class IAwriter {
 	}
 	
 	public void writeCardsInFreeCells(GameOfCards game) throws IOException {
-		int pos = 11;
+		int pos = 1;
 		this.writer.write("% CARDS IN FREE CELLS  " + "\n \n");
 		Card cardInspected;
 
 		for(int i = 0; i < game.getLevel().getFreeCells().size(); i++) {
-			pos++;
-			if(game.getLevel().getFreeCells().get(i).getFreeCells().size() >= 1) {
+			if(game.getLevel().getFreeCells().get(i).getFreeCells().size() == 1) {
 				cardInspected = game.getLevel().getFreeCells().get(i).getFreeCells().get(game.getLevel().getFreeCells().get(i).getFreeCells().size() - 1);
-				this.writer.write("cardsInFreeCells(" + cardInspected.getNumber() + "," + cardInspected.getColumn() + "," + cardInspected.getColor()+ "," + cardInspected.getSuit() + "," + pos + "). \n");
+				this.writer.write("cards(" + cardInspected.getNumber() + "," + cardInspected.getColumn() + ", \"" + cardInspected.getColor()+ "\",\"" + cardInspected.getSuit() + "\"," + pos + "). \n");
 			}
 			this.writer.write("% --- END FREE CELL " + (i+1) + " --- \n \n" );
 		}
