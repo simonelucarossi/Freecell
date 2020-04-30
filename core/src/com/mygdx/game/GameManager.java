@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
@@ -242,7 +243,7 @@ public class GameManager implements ApplicationListener {
 	public ArrayList<Card> calculateSelectedCards(Pile listOfCards, Card selectedCard, int cardPosition) {
 		ArrayList<Card> selectedCards = new ArrayList<Card>();
 
-		if((numberBottomCards(listOfCards, cardPosition) + 1) > availableToMove()) {
+		if((numberBottomCards(listOfCards, cardPosition) + 1) > this.game.availableToMove()) {
 			return selectedCards;
 		} 
 
@@ -271,23 +272,6 @@ public class GameManager implements ApplicationListener {
 		return listOfCards.getSize() - cardPosition; 
 	}
 
-	public int availableToMove() {
-		int counter = 1;
-		for(int i = 0; i < this.game.getLevel().getFreeCells().size(); i++) {
-			if(this.game.getLevel().getFreeCells().get(i).getFreeCells().isEmpty()) {
-				counter++;
-			}
-
-		}
-
-		for(int i = 0; i < this.game.getLevel().getPilesOfCards().size(); i++) {
-			if(this.game.getLevel().getPilesOfCards().get(i).getSize() == 0) {
-				counter++;
-			}
-		}
-		return counter;
-	}
-
 
 	public boolean tryCardMovement(Vector3 mousePosition) {
 		Pile listOfCards; 
@@ -304,7 +288,12 @@ public class GameManager implements ApplicationListener {
 		for(int i = 0; i < listOfPiles.size(); i++) {
 
 			listOfCards = listOfPiles.get(i);
-			cardInspection = listOfCards.getLast();
+			try {
+				cardInspection = listOfCards.getLast();
+			} catch(NoSuchElementException e) {
+				continue;
+			}
+
 
 			if(!(this.selectedCards.isEmpty()) && cardInspection.getColumn() != selectedCards.get(this.selectedCards.size() - 1).getColumn() &&
 					mousePosition.x >= cardInspection.getPositionX() &&
@@ -527,8 +516,8 @@ public class GameManager implements ApplicationListener {
 					if(resultPos != 0) {
 						String[] card = a.split(",");
 						System.out.println("Card: " + "NUMERO: " + card[0] + " COLONNA: " + card[1] + " POSIZIONE: " + card[4]);
-						float column = Float.valueOf(card[1]);
-						float position = Float.valueOf(card[4]); 
+						int column = Integer.valueOf(card[1]);
+						int position = Integer.valueOf(card[4]); 
 						createCardsToMove(column, position);
 					}
 					resultPos++;
@@ -571,8 +560,23 @@ public class GameManager implements ApplicationListener {
 	}
 
 	
-	public void createCardsToMove(float column, float position) {
+	public void createCardsToMove(int column, int position) {
 		Dimension dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		this.game.cardsToMove.add(new Vector2d((int) this.game.getLevel().getPilesOfCards().get((int)column).getPositionX(),(int) (this.game.getLevel().getPilesOfCards().get((int)column).getPositionY() - dimensions.height/31 * position)));
+
+		if (column < 8) {
+			this.game.cardsToMove.add(
+				new Vector2d(
+					(int) this.game.getLevel().getPilesOfCards().get(column).getPositionX(),
+					(int) (this.game.getLevel().getPilesOfCards().get(column).getPositionY() - dimensions.height/31 * position)
+				)
+			);
+		} else {
+			this.game.cardsToMove.add(
+				new Vector2d(
+					(int) this.game.getLevel().getFreeCells().get(0).getPositionX(),
+					(int) (this.game.getLevel().getFreeCells().get(column-8).getPositionY())
+				)
+			);
+		}
 	}
 }

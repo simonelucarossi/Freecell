@@ -248,7 +248,20 @@ public class GameOfCards {
 		this.win = win;
 	}
 	
-	
+	public int availableToMove() {
+		int counter = 1;
+		for(int i = 0; i < getLevel().getFreeCells().size(); i++) {
+			if(getLevel().getFreeCells().get(i).getFreeCells().isEmpty()) {
+				counter++;
+			}
 
-	
+		}
+
+		for(int i = 0; i < getLevel().getPilesOfCards().size(); i++) {
+			if(getLevel().getPilesOfCards().get(i).getSize() == 0) {
+				counter++;
+			}
+		}
+		return counter;
+	}
 }
