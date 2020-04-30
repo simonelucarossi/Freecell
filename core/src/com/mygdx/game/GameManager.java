@@ -594,6 +594,10 @@ public class GameManager implements ApplicationListener {
 				
 			}
 			
+			if(resultCommandLine == null && this.game.emptySpaces.isEmpty()) {
+				this.game.canMove = false;
+			}
+			
 			
 			
 			

@@ -19,10 +19,12 @@ public class GameOfCards {
 	private Menu menuPausedGame;
 	private boolean paused, win;
 	public ArrayList<Vector2d> emptySpaces, cardsToMove;
+	public boolean canMove;
 	
 	Dimension dimensions;
 	
 	public GameOfCards() throws IOException {
+		this.canMove = true;
 		emptySpaces = new ArrayList<Vector2d>();
 		cardsToMove = new ArrayList<Vector2d>();
 		

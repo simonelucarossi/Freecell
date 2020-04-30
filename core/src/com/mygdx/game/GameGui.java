@@ -181,6 +181,10 @@ public class GameGui {
 				}
 			}
 		}
+		
+		if(!(this.game.canMove)) {
+			font.draw(batch, "NO CARDS TO MOVE", screen_width/2 - 90, 143);
+		}
 
 
 		batch.end();
