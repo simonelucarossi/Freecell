@@ -98,8 +98,6 @@ public class GameGui {
 
 					batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
 					font.getData().setScale(1.0f, 1.0f);
-					font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
-					font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
 
 					i++;
 				}
@@ -147,8 +145,6 @@ public class GameGui {
 
 				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
 				font.getData().setScale(1.0f, 1.0f);
-				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
-				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
 			}
 		}
 
@@ -164,23 +160,28 @@ public class GameGui {
 		if(this.game.isPaused()) {
 			drawPausedGameMenu();
 		}
-		
+
 		if((this.game.isWin())) {
 			drawVictory();
 		}
-		
+
 		if(this.game.emptySpaces.size() > 0) {
 			for(int i = 0; i < this.game.emptySpaces.size();i++) {
 				batch.draw(loaderTexture.iaTexture, this.game.emptySpaces.get(i).x, this.game.emptySpaces.get(i).y, screen_width/17, screen_height/6 - 25);
 			}
 		}
-		
+
 		if(this.game.cardsToMove.size() > 0) {
 			for(int i = 0; i < this.game.cardsToMove.size();i++) {
-				batch.draw(loaderTexture.iaTexture, this.game.cardsToMove.get(i).x, this.game.cardsToMove.get(i).y, screen_width/17, screen_height/6 - 25);
+				if(i == 0) {
+					batch.draw(loaderTexture.iaTexture, this.game.cardsToMove.get(i).x, this.game.cardsToMove.get(i).y, screen_width/17, screen_height/6 - 25);
+				}
+				else {
+					batch.draw(loaderTexture.iaTexture2, this.game.cardsToMove.get(i).x, this.game.cardsToMove.get(i).y, screen_width/17, screen_height/6 - 25);
+				}
 			}
 		}
-		
+
 
 		batch.end();
 	}
@@ -288,16 +289,10 @@ public class GameGui {
 			for(Button button : this.game.getMenuDuringGameButtons()) {
 				if(button.getName().equals("Exit")) {
 					batch.draw(loaderTexture.texturePauseButton, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
-					font.draw(batch, String.valueOf(button.getPositionX()), button.getPositionX(), button.getPositionY());
-					font.draw(batch, String.valueOf(button.getPositionY()), button.getPositionX() + 40, button.getPositionY());
 				} else if(button.getName().equals("Menu")) {
 					batch.draw(loaderTexture.textureCardsGameMenu, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
-					font.draw(batch, String.valueOf(button.getPositionX()), button.getPositionX(), button.getPositionY());
-					font.draw(batch, String.valueOf(button.getPositionY()), button.getPositionX() + 40, button.getPositionY());
 				} else if(button.getName().equals("Hint")) {
 					batch.draw(loaderTexture.textureUndoButton, button.getPositionX(), button.getPositionY(), button.getWidth(), button.getHeight());
-					font.draw(batch, String.valueOf(button.getPositionX()), button.getPositionX(), button.getPositionY());
-					font.draw(batch, String.valueOf(button.getPositionY()), button.getPositionX() + 40, button.getPositionY());
 				}
 			}
 		}
@@ -314,7 +309,7 @@ public class GameGui {
 		font.draw(batch, String.valueOf(this.game.getMovement()), screen_width/3 - 380, 90);
 		font.draw(batch, String.valueOf(this.game.getScore()), screen_width/2 + 670, 90);
 	}
-	
+
 	public void drawVictory() {
 		batch.draw(loaderTexture.textureVictory, screen_width/4, 280, screen_width/2, screen_height/2 + 150);
 	}

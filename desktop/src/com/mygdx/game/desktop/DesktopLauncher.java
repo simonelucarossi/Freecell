@@ -13,6 +13,7 @@ public class DesktopLauncher {
 		Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		cfg.width = (int) dimension.getWidth();
 		cfg.height = (int) dimension.getHeight();
+		cfg.fullscreen = true;
 		cfg.forceExit = true;
 		new LwjglApplication(new GameManager(), cfg);
 		

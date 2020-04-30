@@ -1,76 +1,72 @@
-#const allowedMoves = 4. 
+#const allowedMoves = 1. 
 % CARDS
-cards(9,0,"Black","Spades",1). 
-cards(5,0,"Black","Flowers",2). 
-cards(9,0,"Red","Hearts",3). 
-cards(13,0,"Red","Squares",4). 
-cards(6,0,"Red","Squares",5). 
-cards(13,0,"Black","Flowers",6). 
+cards(7,0,"Red","Squares",1). 
+cards(4,0,"Red","Squares",2). 
+cards(12,0,"Red","Squares",3). 
+cards(8,0,"Red","Squares",4). 
+cards(9,0,"Black","Spades",5). 
 %--- END COLUMN 1 --- 
  
-cards(2,1,"Red","Squares",1). 
-cards(4,1,"Red","Hearts",2). 
-cards(11,1,"Black","Spades",3). 
-cards(5,1,"Red","Squares",4). 
-cards(2,1,"Black","Flowers",5). 
-cards(4,1,"Black","Spades",6). 
-cards(10,1,"Red","Hearts",7). 
+cards(5,1,"Red","Hearts",1). 
+cards(3,1,"Black","Spades",2). 
+cards(12,1,"Black","Spades",3). 
+cards(11,1,"Black","Spades",4). 
+cards(11,1,"Red","Squares",5). 
+cards(8,1,"Black","Spades",6). 
+cards(11,1,"Black","Flowers",7). 
 %--- END COLUMN 2 --- 
  
-cards(2,2,"Red","Hearts",1). 
-cards(6,2,"Black","Spades",2). 
-cards(7,2,"Black","Spades",3). 
-cards(1,2,"Black","Spades",4). 
-cards(10,2,"Red","Squares",5). 
-cards(5,2,"Black","Spades",6). 
-cards(7,2,"Red","Hearts",7). 
+cards(9,2,"Black","Flowers",1). 
+cards(2,2,"Black","Flowers",2). 
+cards(3,2,"Red","Squares",3). 
+cards(13,2,"Black","Flowers",4). 
+cards(13,2,"Red","Squares",5). 
+cards(1,2,"Red","Hearts",6). 
+cards(6,2,"Black","Spades",7). 
 %--- END COLUMN 3 --- 
  
-cards(12,3,"Black","Spades",1). 
-cards(12,3,"Red","Squares",2). 
-cards(2,3,"Black","Spades",3). 
-cards(1,3,"Black","Flowers",4). 
-cards(10,3,"Black","Flowers",5). 
-cards(8,3,"Red","Hearts",6). 
-cards(4,3,"Red","Squares",7). 
+cards(12,3,"Black","Flowers",1). 
+cards(11,3,"Red","Hearts",2). 
+cards(12,3,"Red","Hearts",3). 
+cards(5,3,"Black","Flowers",4). 
+cards(10,3,"Red","Hearts",5). 
+cards(6,3,"Black","Flowers",6). 
 %--- END COLUMN 4 --- 
  
-cards(13,4,"Red","Hearts",1). 
-cards(7,4,"Red","Squares",2). 
-cards(13,4,"Black","Spades",3). 
-cards(3,4,"Black","Spades",4). 
-cards(8,4,"Black","Flowers",5). 
-cards(9,4,"Red","Squares",6). 
+cards(6,4,"Red","Hearts",1). 
+cards(13,4,"Black","Spades",2). 
+cards(3,4,"Red","Hearts",3). 
+cards(5,4,"Red","Squares",4). 
+cards(4,4,"Black","Spades",5). 
 %--- END COLUMN 5 --- 
  
-cards(10,5,"Black","Spades",1). 
-cards(8,5,"Red","Squares",2). 
-cards(3,5,"Black","Flowers",3). 
-cards(1,5,"Red","Squares",4). 
-cards(12,5,"Black","Flowers",5). 
-cards(8,5,"Black","Spades",6). 
+cards(13,5,"Red","Hearts",1). 
+cards(2,5,"Red","Hearts",2). 
+cards(2,5,"Red","Squares",3). 
+cards(4,5,"Black","Flowers",4). 
+cards(2,5,"Black","Spades",5). 
+cards(5,5,"Black","Spades",6). 
 %--- END COLUMN 6 --- 
  
-cards(6,6,"Black","Flowers",1). 
-cards(11,6,"Red","Hearts",2). 
-cards(4,6,"Black","Flowers",3). 
-cards(5,6,"Red","Hearts",4). 
-cards(3,6,"Red","Squares",5). 
-cards(11,6,"Red","Squares",6). 
+cards(6,6,"Red","Squares",1). 
+cards(10,6,"Red","Squares",2). 
+cards(8,6,"Red","Hearts",3). 
+cards(7,6,"Red","Hearts",4). 
+cards(7,6,"Black","Flowers",5). 
 %--- END COLUMN 7 --- 
  
-cards(12,7,"Red","Hearts",1). 
-cards(3,7,"Red","Hearts",2). 
-cards(7,7,"Black","Flowers",3). 
-cards(9,7,"Black","Flowers",4). 
-cards(6,7,"Red","Hearts",5). 
-cards(11,7,"Black","Flowers",6). 
+cards(1,7,"Red","Squares",1). 
+cards(7,7,"Black","Spades",2). 
+cards(1,7,"Black","Spades",3). 
+cards(9,7,"Red","Hearts",4). 
+cards(4,7,"Red","Hearts",5). 
+cards(3,7,"Black","Flowers",6). 
 %--- END COLUMN 8 --- 
  
 % SCALES  
  
 scales(0). 
-cardOnScale(1,0,"Hearts").
+cardOnScale(1,0,"Flowers").
 % --- END SCALE 1 --- 
  
 scales(1). 
@@ -84,12 +80,16 @@ scales(3).
  
 % CARDS IN FREE CELLS  
  
+cards(8,8, "Black","Flowers",1). 
 % --- END FREE CELL 1 --- 
  
+cards(9,9, "Red","Squares",1). 
 % --- END FREE CELL 2 --- 
  
+cards(10,10, "Black","Flowers",1). 
 % --- END FREE CELL 3 --- 
  
+cards(10,11, "Black","Spades",1). 
 % --- END FREE CELL 4 --- 
  
 % IA  

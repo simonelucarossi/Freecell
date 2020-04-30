@@ -64,7 +64,6 @@ public class GameManager implements ApplicationListener {
 				
 				this.mousePosition = gameGui.getCamera().unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 				
-				System.out.println("CLICK DEL MOUSE! " + mousePosition.x + " " + mousePosition.y);
 
 
 				try {
@@ -159,7 +158,6 @@ public class GameManager implements ApplicationListener {
 						mousePosition.y >= cardInspection.getPositionY() + cardInspection.getHeight() - topBorderOfCard &&
 						mousePosition.y  <= (cardInspection.getPositionY() + cardInspection.getHeight())
 						) {
-					System.out.println("HELLO");
 					selectCards(calculateSelectedCards(listOfCards, cardInspection, cardPosition));
 				}
 				cardPosition++;
@@ -300,7 +298,8 @@ public class GameManager implements ApplicationListener {
 					mousePosition.x  <= (cardInspection.getPositionX() + cardInspection.getWidth()) &&
 					mousePosition.y >= cardInspection.getPositionY() &&
 					mousePosition.y  <= (cardInspection.getPositionY() + cardInspection.getHeight()) &&
-					!(cardInspection.getColor().equals(selectedCards.get(this.selectedCards.size() - 1).getColor())))
+					!(cardInspection.getColor().equals(selectedCards.get(this.selectedCards.size() - 1).getColor())) &&
+					(cardInspection.getNumber() == (selectedCards.get(this.selectedCards.size() - 1).getNumber() + 1)))
 			{
 				if(movingCardsFromPilesOfCards(selectedCards)) {
 					moveSelectedCards(cardInspection);
@@ -312,12 +311,37 @@ public class GameManager implements ApplicationListener {
 				}
 			} 
 		}
+		
+		
+		/* CKECK EMPTY COLUMNS*/
+		for(int i = 0; i < listOfPiles.size(); i++) {
+			
+			if(listOfPiles.get(i).getCards().isEmpty()) {
+				if(!(this.selectedCards.isEmpty()) && i != selectedCards.get(this.selectedCards.size() - 1).getColumn() &&
+						mousePosition.x >= listOfPiles.get(i).getPositionX() &&
+						mousePosition.x  <= (listOfPiles.get(i).getPositionX() + listOfPiles.get(i).getWidth()) &&
+						mousePosition.y >= listOfPiles.get(i).getPositionY() &&
+						mousePosition.y  <= (listOfPiles.get(i).getPositionY() + listOfPiles.get(i).getHeight())
+						) {
+					
+					if(movingCardsFromPilesOfCards(selectedCards)) {
+						moveSelectedCardsToEmpty(i, listOfPiles.get(i).getPositionX(), listOfPiles.get(i).getPositionY());
+						return true;
+					}
+					else {
+						moveSelectedCardsFromFreeCellToEmpty(i, listOfPiles.get(i).getPositionX(), listOfPiles.get(i).getPositionY());
+						return true;
+					}
+
+				}	
+			}
+		}
+		
 
 		/* CHECK FREE CELLS */
 
 		for(int i = 0; i < this.game.getLevel().getFreeCells().size(); i++) {
 			cellInspected = this.game.getLevel().getFreeCells().get(i);	
-			// System.out.println("Cella controllata SOPRA: " + cellInspected.getColumn()); 
 			arrayCellInspected = this.game.getLevel().getFreeCells().get(i).getFreeCells();
 			if((cellInspected.getFreeCells().isEmpty()) && !(this.selectedCards.isEmpty()) && (this.selectedCards.size() < 2) && cellInspected.getColumn() != selectedCards.get(this.selectedCards.size() - 1).getColumn() &&
 					mousePosition.x >= cellInspected.getPositionX() &&
@@ -395,6 +419,34 @@ public class GameManager implements ApplicationListener {
 			this.selectedCards.remove(this.selectedCards.remove(i));
 		}
 	}
+	
+	
+	public void moveSelectedCardsToEmpty(int column, float f, float g) {
+		Card cardInspection = this.selectedCards.get(this.selectedCards.size() - 1);
+		int columnWhereInsert =	column;
+		float positionXWhereMove = f;
+		float positionYWhereMove = this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getPositionY() - (this.game.getLevel().getH()/31 * this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getSize());
+
+		cardInspection.setSelected(false);
+		this.game.getLevel().getPilesOfCards().get(cardInspection.getColumn()).removeCard(cardInspection);
+		cardInspection.setColumn(columnWhereInsert);
+		cardInspection.setPositionX(positionXWhereMove);
+		cardInspection.setPositionY(positionYWhereMove);
+		this.game.getLevel().getPilesOfCards().get(columnWhereInsert).insertCard(cardInspection);
+		this.selectedCards.remove(this.selectedCards.remove(this.selectedCards.size() - 1));
+
+		for(int i = 0; i < this.selectedCards.size(); i++) {
+			positionYWhereMove = this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getPositionY() - (this.game.getLevel().getH()/31 * this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getSize());
+			cardInspection = this.selectedCards.get(i);
+			cardInspection.setSelected(false);
+			this.game.getLevel().getPilesOfCards().get(cardInspection.getColumn()).removeCard(cardInspection);
+			cardInspection.setColumn(columnWhereInsert);
+			cardInspection.setPositionX(positionXWhereMove);
+			cardInspection.setPositionY(positionYWhereMove);
+			this.game.getLevel().getPilesOfCards().get(column).insertCard(cardInspection);
+			this.selectedCards.remove(this.selectedCards.remove(i));
+		}
+	}
 
 
 	public void moveSelectedCardsToCells(Card cardPassed) {
@@ -466,6 +518,24 @@ public class GameManager implements ApplicationListener {
 
 		this.selectedCards.clear();
 	}
+	
+	
+	public void moveSelectedCardsFromFreeCellToEmpty(int column,  float positionX, float positionY) {
+		Card cardInspection = this.selectedCards.get(this.selectedCards.size() - 1);
+		int columnWhereInsert = column;
+		float positionXWhereMove = positionX;
+		float positionYWhereMove = this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getPositionY() - (this.game.getLevel().getH()/31 * this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getSize());
+
+		cardInspection.setSelected(false);
+		this.game.getLevel().getFreeCells().get(cardInspection.getColumn() - 8).removeCard(cardInspection);
+		cardInspection.setColumn(columnWhereInsert);
+		cardInspection.setPositionX(positionXWhereMove);
+		cardInspection.setPositionY(positionYWhereMove);
+		this.game.getLevel().getPilesOfCards().get(column).insertCard(cardInspection);
+
+		this.selectedCards.clear();
+	}
+	
 
 
 	public void moveSelectedCardsFromFreeCellToScale(Card cardPassed) {
@@ -515,7 +585,6 @@ public class GameManager implements ApplicationListener {
 				for(String a : str) { 
 					if(resultPos != 0) {
 						String[] card = a.split(",");
-						System.out.println("Card: " + "NUMERO: " + card[0] + " COLONNA: " + card[1] + " POSIZIONE: " + card[4]);
 						int column = Integer.valueOf(card[1]);
 						int position = Integer.valueOf(card[4]); 
 						createCardsToMove(column, position);
@@ -529,13 +598,11 @@ public class GameManager implements ApplicationListener {
 			
 			
 		} else if(button.getName().equals("New Game")) {
-			System.out.println("NEW GAME");
 			this.game.newGame();
 			this.game.setPaused(!(this.game.isPaused()));
 		} else if(button.getName().equals("Restart Game")) {
 			this.game.restart();
 			this.game.setPaused(!(this.game.isPaused()));
-			System.out.println("RESTART GAME");
 		} else if(button.getName().equals("Back To Game")) {
 			this.game.setPaused(!(this.game.isPaused()));
 		}
@@ -557,6 +624,12 @@ public class GameManager implements ApplicationListener {
 				this.game.emptySpaces.add(new Vector2d(this.game.getLevel().getFreeCells().get(i).getPositionX(), this.game.getLevel().getFreeCells().get(i).getPositionY()));
 			}
 		}
+		
+		for(int i = 0; i < this.game.getLevel().getPilesOfCards().size(); i++) {
+			if(this.game.getLevel().getPilesOfCards().get(i).getSize() == 0) {
+				this.game.emptySpaces.add(new Vector2d((int)this.game.getLevel().getPilesOfCards().get(i).getPositionX(),(int) this.game.getLevel().getPilesOfCards().get(i).getPositionY()));
+			}
+		}
 	}
 
 	
@@ -566,8 +639,8 @@ public class GameManager implements ApplicationListener {
 		if (column < 8) {
 			this.game.cardsToMove.add(
 				new Vector2d(
-					(int) this.game.getLevel().getPilesOfCards().get(column).getPositionX(),
-					(int) (this.game.getLevel().getPilesOfCards().get(column).getPositionY() - dimensions.height/31 * position)
+					(int) this.game.getLevel().getPilesOfCards().get(column).getPositionX() - 2,
+					(int) (this.game.getLevel().getPilesOfCards().get(column).getPositionY() - dimensions.height/31 * position + 30)
 				)
 			);
 		} else {

@@ -115,7 +115,13 @@ public class Level {
 		float positionXWhereInsert, positionYWhereInsert;
 		Card generatedCard = null;
 		
-		this.reader = new BufferReader(3);
+		int generatedNumber = (int) ((Math.random()*((5-0)+1))+0);
+		
+		while(generatedNumber == 0) {
+			generatedNumber = (int) ((Math.random()*((5-0)+1))+0);
+		}
+		
+		this.reader = new BufferReader(generatedNumber);
 		
 		this.reader.readLine();
 		while(this.reader.hasLine()) {
