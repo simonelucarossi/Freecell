@@ -1,4 +1,5 @@
 % IA
+allColumns(0..7).
 
 lastCards(Column, Pos, Color) :- #max{Q: cards(_,Column,_,_,Q)} = Pos, cards(Num,Column,Color,Suit,Pos).
 
@@ -6,7 +7,6 @@ move(Num, Column, Color, Suit, Pos) v noMove(Num, Column, Color, Suit, Pos) :- c
 minimumCard(Num, Color) :- #min{Pos : move(_, _, _, _, Pos)} = MinPos, move(Num, _, Color, _, MinPos).
 movingMoreThanOneCard :- #count{Num: move(Num,_,_,_,_)} > 1.
 
-allColumns(Column) :- cards(_, Column, _, _, _).
 selectedColumn(Column) :- move(Num, Column, Color, Suit, Pos).
 unselectedColumns(Column) v selectedColumn(Column) :- allColumns(Column).
 
