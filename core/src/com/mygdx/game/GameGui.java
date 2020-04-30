@@ -29,8 +29,8 @@ public class GameGui {
 
 	public GameGui(GameOfCards _game) {
 		dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		screen_width = dimensions.width;
-		screen_height = dimensions.height;
+		screen_width = (int)dimensions.getWidth();
+		screen_height = (int)dimensions.getHeight();
 
 		this.game = _game;
 		this.batch = new SpriteBatch();
@@ -44,7 +44,7 @@ public class GameGui {
 		fontSizeX = (float) 0.5;
 		fontSizeY = (float) 0.5;
 
-		camera = new OrthographicCamera(dimensions.width, dimensions.height);
+		camera = new OrthographicCamera((float)dimensions.getWidth(), (float)dimensions.getHeight());
 		camera.position.set((float)dimensions.getWidth()/2.0f,(float)dimensions.getHeight()/2.0f, 0.0f);
 
 		this.pile_margin = screen_width/11;
@@ -61,6 +61,7 @@ public class GameGui {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
+		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
 
@@ -171,6 +172,12 @@ public class GameGui {
 		if(this.game.emptySpaces.size() > 0) {
 			for(int i = 0; i < this.game.emptySpaces.size();i++) {
 				batch.draw(loaderTexture.iaTexture, this.game.emptySpaces.get(i).x, this.game.emptySpaces.get(i).y, screen_width/17, screen_height/6 - 25);
+			}
+		}
+		
+		if(this.game.cardsToMove.size() > 0) {
+			for(int i = 0; i < this.game.cardsToMove.size();i++) {
+				batch.draw(loaderTexture.iaTexture, this.game.cardsToMove.get(i).x, this.game.cardsToMove.get(i).y, screen_width/17, screen_height/6 - 25);
 			}
 		}
 		

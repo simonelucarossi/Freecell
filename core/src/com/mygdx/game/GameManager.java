@@ -59,10 +59,11 @@ public class GameManager implements ApplicationListener {
 			long secondClick = System.currentTimeMillis();
 			if(secondClick - firstClick > 500) {
 				this.game.emptySpaces = new ArrayList<Vector2d>();
+				this.game.cardsToMove = new ArrayList<Vector2d>();
 				
 				this.mousePosition = gameGui.getCamera().unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 				
-				//System.out.println("CLICK DEL MOUSE! " + mousePosition.x + " " + mousePosition.y);
+				System.out.println("CLICK DEL MOUSE! " + mousePosition.x + " " + mousePosition.y);
 
 
 				try {
@@ -89,8 +90,9 @@ public class GameManager implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		gameGui.getCamera().viewportWidth = 1800; // Viewport of 30 units!
-		gameGui.getCamera().viewportHeight = 900; // Lets keep things in proportion.
+		Dimension dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		gameGui.getCamera().viewportWidth = (float)dimensions.getWidth(); // Viewport of 30 units!
+		gameGui.getCamera().viewportHeight = (float)dimensions.getHeight(); // Lets keep things in proportion.
 		gameGui.getCamera().update();
 	}
 
@@ -111,8 +113,7 @@ public class GameManager implements ApplicationListener {
 			if(this.selectedCards.isEmpty()) {
 				tryCardSelection(mousePosition);
 				tryFreeCellSelection(mousePosition);
-				if(this.game.getScore() >= 50)
-					tryClickButton(mousePosition);
+				tryClickButton(mousePosition);
 			} else {
 				if(tryCardMovement(mousePosition)) {
 					this.game.setScore(this.game.getScore() + 10);
@@ -121,8 +122,7 @@ public class GameManager implements ApplicationListener {
 
 				else {
 					deselectCards();
-					if(this.game.getScore() >= 50)
-						tryClickButton(mousePosition);
+					tryClickButton(mousePosition);
 				}
 			}
 		} else {
@@ -201,7 +201,6 @@ public class GameManager implements ApplicationListener {
 
 	public void tryClickButton(Vector3 mousePosition) throws IOException {
 
-		startButtonAction(this.game.getMenuDuringGameButtons().get(2));
 
 		for(int i = 0; i < this.game.getMenuDuringGameButtons().size(); i++) {
 			for(Button button : this.game.getMenuDuringGameButtons()) {
@@ -217,7 +216,6 @@ public class GameManager implements ApplicationListener {
 	}
 	
 	public void tryClickMenuPausedGameButton(Vector3 mousePosition) throws IOException {
-		startButtonAction(this.game.getMenuPausedGame().getButtons().get(0));
 
 		for(int i = 0; i < this.game.getMenuPausedGame().getButtons().size(); i++) {
 			for(Button button : this.game.getMenuPausedGame().getButtons()) {
@@ -516,22 +514,26 @@ public class GameManager implements ApplicationListener {
 			if(resultCommandLine == null) {
 				createEmptySpace();
 			} else {
-				String[] str = resultCommandLine.split(",");
-				for(String a: str) {
+				
+				
+				resultCommandLine = resultCommandLine.replace("{move(","Card:");
+				resultCommandLine = resultCommandLine.replace("), move(", "Card:");
+				resultCommandLine = resultCommandLine.replace(")}", "");
+				
+				
+				String[] str = resultCommandLine.split("Card:");
+				
+				for(String a : str) { 
+					if(resultPos != 0) {
+						String[] card = a.split(",");
+						System.out.println("Card: " + "NUMERO: " + card[0] + " COLONNA: " + card[1] + " POSIZIONE: " + card[4]);
+						float column = Float.valueOf(card[1]);
+						float position = Float.valueOf(card[4]); 
+						createCardsToMove(column, position);
+					}
 					resultPos++;
-					if(resultPos == 1 ) {
-						System.out.println(a.replace("{move(","NUMERO CARTA: "));
-					}
-					else if(resultPos == 2) {
-						System.out.println("COLONNA:"+ a);
-					}
-						
-					else if (resultPos == 5) {
-						System.out.println(a.replace(")}",""));
-					}
-						
 				}
-				createCardsToMove(resultCommandLine);
+				
 			}
 			
 			
@@ -569,7 +571,8 @@ public class GameManager implements ApplicationListener {
 	}
 
 	
-	public void createCardsToMove(String line) {
-		
+	public void createCardsToMove(float column, float position) {
+		Dimension dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		this.game.cardsToMove.add(new Vector2d((int) this.game.getLevel().getPilesOfCards().get((int)column).getPositionX(),(int) (this.game.getLevel().getPilesOfCards().get((int)column).getPositionY() - dimensions.height/31 * position)));
 	}
 }

@@ -11,8 +11,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		cfg.width = dimension.width;
-		cfg.height = dimension.height;
+		cfg.width = (int) dimension.getWidth();
+		cfg.height = (int) dimension.getHeight();
 		cfg.forceExit = true;
 		new LwjglApplication(new GameManager(), cfg);
 		
