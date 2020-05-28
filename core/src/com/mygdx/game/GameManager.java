@@ -61,9 +61,9 @@ public class GameManager implements ApplicationListener {
 			if(secondClick - firstClick > 500) {
 				this.game.emptySpaces = new ArrayList<Vector2d>();
 				this.game.cardsToMove = new ArrayList<Vector2d>();
-				
+
 				this.mousePosition = gameGui.getCamera().unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-				
+
 
 
 				try {
@@ -76,7 +76,7 @@ public class GameManager implements ApplicationListener {
 				}
 				firstClick = secondClick;
 			}
-			
+
 		}
 
 		checkGameVictory();
@@ -213,7 +213,7 @@ public class GameManager implements ApplicationListener {
 			}
 		}
 	}
-	
+
 	public void tryClickMenuPausedGameButton(Vector3 mousePosition) throws IOException {
 
 		for(int i = 0; i < this.game.getMenuPausedGame().getButtons().size(); i++) {
@@ -247,6 +247,7 @@ public class GameManager implements ApplicationListener {
 
 		int currentCardIndex = -1;
 		Card previousCard = selectedCard;
+		selectedCards.add(selectedCard);
 		for(Card currentCard : listOfCards.getCards()) {
 			currentCardIndex++;
 			if(currentCardIndex <= cardPosition) {
@@ -262,8 +263,7 @@ public class GameManager implements ApplicationListener {
 			previousCard = currentCard;
 		}
 
-		selectedCards.add(selectedCard);
-		return selectedCards;
+		return reverseSelectedCards(selectedCards);
 	}
 
 	public int numberBottomCards(Pile listOfCards, int cardPosition) {
@@ -311,11 +311,11 @@ public class GameManager implements ApplicationListener {
 				}
 			} 
 		}
-		
-		
+
+
 		/* CKECK EMPTY COLUMNS*/
 		for(int i = 0; i < listOfPiles.size(); i++) {
-			
+
 			if(listOfPiles.get(i).getCards().isEmpty()) {
 				if(!(this.selectedCards.isEmpty()) && i != selectedCards.get(this.selectedCards.size() - 1).getColumn() &&
 						mousePosition.x >= listOfPiles.get(i).getPositionX() &&
@@ -323,7 +323,7 @@ public class GameManager implements ApplicationListener {
 						mousePosition.y >= listOfPiles.get(i).getPositionY() &&
 						mousePosition.y  <= (listOfPiles.get(i).getPositionY() + listOfPiles.get(i).getHeight())
 						) {
-					
+
 					if(movingCardsFromPilesOfCards(selectedCards)) {
 						moveSelectedCardsToEmpty(i, listOfPiles.get(i).getPositionX(), listOfPiles.get(i).getPositionY());
 						return true;
@@ -336,7 +336,7 @@ public class GameManager implements ApplicationListener {
 				}	
 			}
 		}
-		
+
 
 		/* CHECK FREE CELLS */
 
@@ -405,9 +405,12 @@ public class GameManager implements ApplicationListener {
 		cardInspection.setPositionX(positionXWhereMove);
 		cardInspection.setPositionY(positionYWhereMove);
 		this.game.getLevel().getPilesOfCards().get(cardPassed.getColumn()).insertCard(cardInspection);
+		if(this.selectedCards.size() >= 3) {
+			System.out.println("CIAO!");
+		}
 		this.selectedCards.remove(this.selectedCards.remove(this.selectedCards.size() - 1));
 
-		for(int i = this.selectedCards.size() - 2; i >= 0; i--) {
+		for(int i = this.selectedCards.size() - 1; i >= 0; i--) {
 			positionYWhereMove = this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getPositionY() - (this.game.getLevel().getH()/31 * this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getSize());
 			cardInspection = this.selectedCards.get(i);
 			cardInspection.setSelected(false);
@@ -419,8 +422,8 @@ public class GameManager implements ApplicationListener {
 			this.selectedCards.remove(this.selectedCards.remove(this.selectedCards.size() - 1));
 		}
 	}
-	
-	
+
+
 	public void moveSelectedCardsToEmpty(int column, float f, float g) {
 		Card cardInspection = this.selectedCards.get(this.selectedCards.size() - 1);
 		int columnWhereInsert =	column;
@@ -435,7 +438,7 @@ public class GameManager implements ApplicationListener {
 		this.game.getLevel().getPilesOfCards().get(columnWhereInsert).insertCard(cardInspection);
 		this.selectedCards.remove(this.selectedCards.remove(this.selectedCards.size() - 1));
 
-		for(int i = this.selectedCards.size() - 2; i >= 0; i--) {
+		for(int i = this.selectedCards.size() - 1; i >= 0; i--) {
 			positionYWhereMove = this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getPositionY() - (this.game.getLevel().getH()/31 * this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getSize());
 			cardInspection = this.selectedCards.get(i);
 			cardInspection.setSelected(false);
@@ -518,8 +521,8 @@ public class GameManager implements ApplicationListener {
 
 		this.selectedCards.clear();
 	}
-	
-	
+
+
 	public void moveSelectedCardsFromFreeCellToEmpty(int column,  float positionX, float positionY) {
 		Card cardInspection = this.selectedCards.get(this.selectedCards.size() - 1);
 		int columnWhereInsert = column;
@@ -535,7 +538,7 @@ public class GameManager implements ApplicationListener {
 
 		this.selectedCards.clear();
 	}
-	
+
 
 
 	public void moveSelectedCardsFromFreeCellToScale(Card cardPassed) {
@@ -567,21 +570,21 @@ public class GameManager implements ApplicationListener {
 			iaWriter = new IAwriter();
 			iaWriter.writeOnFile(this.game);
 			DlvRunner dlvRunner = new DlvRunner();
-			
+
 			resultCommandLine = dlvRunner.readedLine;
 			int resultPos = 0;
 			if(resultCommandLine == null) {
 				createEmptySpace();
 			} else {
-				
-				
+
+
 				resultCommandLine = resultCommandLine.replace("{move(","Card:");
 				resultCommandLine = resultCommandLine.replace("), move(", "Card:");
 				resultCommandLine = resultCommandLine.replace(")}", "");
-				
-				
+
+
 				String[] str = resultCommandLine.split("Card:");
-				
+
 				for(String a : str) { 
 					if(resultPos != 0) {
 						String[] card = a.split(",");
@@ -591,16 +594,16 @@ public class GameManager implements ApplicationListener {
 					}
 					resultPos++;
 				}
-				
+
 			}
-			
+
 			if(resultCommandLine == null && this.game.emptySpaces.isEmpty()) {
 				this.game.canMove = false;
 			}
-			
-			
-			
-			
+
+
+
+
 		} else if(button.getName().equals("New Game")) {
 			this.game.newGame();
 			this.game.setPaused(!(this.game.isPaused()));
@@ -612,7 +615,7 @@ public class GameManager implements ApplicationListener {
 		}
 
 	}
-	
+
 	public void checkGameVictory() {
 		if(this.game.getLevel().getScales().get(0).getScale().size() + 
 				this.game.getLevel().getScales().get(1).getScale().size() + 
@@ -621,14 +624,14 @@ public class GameManager implements ApplicationListener {
 			this.game.setWin(true);
 		}
 	}
-	
+
 	public void createEmptySpace() {
 		for(int i = 0; i < this.game.getLevel().getFreeCells().size(); i++) {
 			if(this.game.getLevel().getFreeCells().get(i).getFreeCells().isEmpty()) {
 				this.game.emptySpaces.add(new Vector2d(this.game.getLevel().getFreeCells().get(i).getPositionX(), this.game.getLevel().getFreeCells().get(i).getPositionY()));
 			}
 		}
-		
+
 		for(int i = 0; i < this.game.getLevel().getPilesOfCards().size(); i++) {
 			if(this.game.getLevel().getPilesOfCards().get(i).getSize() == 0) {
 				this.game.emptySpaces.add(new Vector2d((int)this.game.getLevel().getPilesOfCards().get(i).getPositionX(),(int) this.game.getLevel().getPilesOfCards().get(i).getPositionY()));
@@ -636,24 +639,35 @@ public class GameManager implements ApplicationListener {
 		}
 	}
 
-	
+
 	public void createCardsToMove(int column, int position) {
 		Dimension dimensions = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 
 		if (column < 8) {
 			this.game.cardsToMove.add(
-				new Vector2d(
-					(int) this.game.getLevel().getPilesOfCards().get(column).getPositionX() - 2,
-					(int) (this.game.getLevel().getPilesOfCards().get(column).getPositionY() - dimensions.height/31 * position + 30)
-				)
-			);
+					new Vector2d(
+							(int) this.game.getLevel().getPilesOfCards().get(column).getPositionX() - 2,
+							(int) (this.game.getLevel().getPilesOfCards().get(column).getPositionY() - dimensions.height/31 * position + 30)
+							)
+					);
 		} else {
 			this.game.cardsToMove.add(
-				new Vector2d(
-					(int) this.game.getLevel().getFreeCells().get(0).getPositionX(),
-					(int) (this.game.getLevel().getFreeCells().get(column-8).getPositionY())
-				)
-			);
+					new Vector2d(
+							(int) this.game.getLevel().getFreeCells().get(0).getPositionX(),
+							(int) (this.game.getLevel().getFreeCells().get(column-8).getPositionY())
+							)
+					);
 		}
 	}
+
+
+	public ArrayList<Card> reverseSelectedCards(ArrayList<Card> selectedCards) {
+		ArrayList<Card> tmpArrayOfCards = new ArrayList<Card>();
+		for(int i = selectedCards.size() - 1; i >= 0; i--) {
+			tmpArrayOfCards.add(selectedCards.get(i));
+		}
+		return tmpArrayOfCards;
+	}
+
 }
+
