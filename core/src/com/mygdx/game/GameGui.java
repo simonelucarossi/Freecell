@@ -123,9 +123,6 @@ public class GameGui {
 				}
 
 				batch.draw(cardTexture, card_positionX, card_positionY, card_width, card_height);
-				font.getData().setScale(1.0f, 1.0f);
-				font.draw(batch, String.valueOf(card_positionX), card_positionX, card_positionY);
-				font.draw(batch, String.valueOf(card_positionY), card_positionX+40, card_positionY);
 			}
 		}
 

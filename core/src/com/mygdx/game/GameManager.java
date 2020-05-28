@@ -407,7 +407,7 @@ public class GameManager implements ApplicationListener {
 		this.game.getLevel().getPilesOfCards().get(cardPassed.getColumn()).insertCard(cardInspection);
 		this.selectedCards.remove(this.selectedCards.remove(this.selectedCards.size() - 1));
 
-		for(int i = 0; i < this.selectedCards.size(); i++) {
+		for(int i = this.selectedCards.size() - 2; i >= 0; i--) {
 			positionYWhereMove = this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getPositionY() - (this.game.getLevel().getH()/31 * this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getSize());
 			cardInspection = this.selectedCards.get(i);
 			cardInspection.setSelected(false);
@@ -416,7 +416,7 @@ public class GameManager implements ApplicationListener {
 			cardInspection.setPositionX(positionXWhereMove);
 			cardInspection.setPositionY(positionYWhereMove);
 			this.game.getLevel().getPilesOfCards().get(cardPassed.getColumn()).insertCard(cardInspection);
-			this.selectedCards.remove(this.selectedCards.remove(i));
+			this.selectedCards.remove(this.selectedCards.remove(this.selectedCards.size() - 1));
 		}
 	}
 	
@@ -435,7 +435,7 @@ public class GameManager implements ApplicationListener {
 		this.game.getLevel().getPilesOfCards().get(columnWhereInsert).insertCard(cardInspection);
 		this.selectedCards.remove(this.selectedCards.remove(this.selectedCards.size() - 1));
 
-		for(int i = 0; i < this.selectedCards.size(); i++) {
+		for(int i = this.selectedCards.size() - 2; i >= 0; i--) {
 			positionYWhereMove = this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getPositionY() - (this.game.getLevel().getH()/31 * this.game.getLevel().getPilesOfCards().get(columnWhereInsert).getSize());
 			cardInspection = this.selectedCards.get(i);
 			cardInspection.setSelected(false);
@@ -444,7 +444,7 @@ public class GameManager implements ApplicationListener {
 			cardInspection.setPositionX(positionXWhereMove);
 			cardInspection.setPositionY(positionYWhereMove);
 			this.game.getLevel().getPilesOfCards().get(column).insertCard(cardInspection);
-			this.selectedCards.remove(this.selectedCards.remove(i));
+			this.selectedCards.remove(this.selectedCards.remove(this.selectedCards.size() - 1));
 		}
 	}
 
